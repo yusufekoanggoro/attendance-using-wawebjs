@@ -2,6 +2,13 @@ const usecase = require('../usecase');
 const timeUtils = require('../lib/utils/time');
 const logger = require('../lib/logger');
 const constants = require('../lib/utils/constants');
+const config = require('../../config');
+const minSleepmsHandleBlasting = config.get('/minSleepmsHandleBlasting')
+  ? config.get('/minSleepmsHandleBlasting')
+  : 1500; 
+const maxSleepmsHandleBlasting = config.get('/maxSleepmsHandleBlasting')
+  ? config.get('/maxSleepmsHandleBlasting')
+  : 3000;
 
 const onMessage = async (client) => {
   client.on('message', async (msg) => {
@@ -25,7 +32,7 @@ const onMessage = async (client) => {
             logger.info(`Processing: ${msgBody}`);
             const res = await usecase.createUser({ msg, groupInfo, userInfo });
             if (!res.err) {
-              await timeUtils.sleepRandom(1000, 2000);
+              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(res.data);
             } else {
               logger.error(res.err);
@@ -37,7 +44,7 @@ const onMessage = async (client) => {
             logger.info(`Processing: ${msgBody}`);
             const res = await usecase.createPresence({ groupInfo, userInfo });
             if (!res.err) {
-              await timeUtils.sleepRandom(1000, 2000);
+              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(res.data);
             } else {
               logger.error(res.err);
@@ -49,7 +56,7 @@ const onMessage = async (client) => {
             logger.info(`Processing: ${msgBody}`);
             const res = await usecase.getParticipants({ groupInfo, userInfo });
             if (!res.err) {
-              await timeUtils.sleepRandom(1000, 2000);
+              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(res.data);
             } else {
               logger.error(res.err);
@@ -70,10 +77,10 @@ const onMessage = async (client) => {
             if (!res.err) {
               if (res.data.textMentionsUser !== '') {
                 const reminder = '🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰';
-                await timeUtils.sleepRandom(1000, 2000);
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await chat.sendMessage(reminder);
 
-                await timeUtils.sleepRandom(1000, 2000);
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await chat.sendMessage(res.data.textMentionsUser, {
                   mentions: res.data.mentions,
                 });
@@ -88,7 +95,7 @@ const onMessage = async (client) => {
             logger.info(`Processing: ${msgBody}`);
             const res = await usecase.getPresence(groupInfo);
             if (!res.err) {
-              await timeUtils.sleepRandom(1000, 2000);
+              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(res.data);
             } else {
               logger.error(res.err);
@@ -126,7 +133,7 @@ const onMessageCreate = async (client) => {
               logger.info(`Processing: ${msgBody}`);
               const res = await usecase.createUser({ msg, groupInfo, userInfo });
               if (!res.err) {
-                await timeUtils.sleepRandom(1000, 2000);
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(res.data);
               } else {
                 logger.error(res.err);
@@ -138,7 +145,7 @@ const onMessageCreate = async (client) => {
               logger.info(`Processing: ${msgBody}`);
               const res = await usecase.createPresence({ groupInfo, userInfo });
               if (!res.err) {
-                await timeUtils.sleepRandom(1000, 2000);
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(res.data);
               } else {
                 logger.error(res.err);
@@ -150,7 +157,7 @@ const onMessageCreate = async (client) => {
               logger.info(`Processing: ${msgBody}`);
               const res = await usecase.getParticipants({ groupInfo, userInfo });
               if (!res.err) {
-                await timeUtils.sleepRandom(1000, 2000);
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(res.data);
               } else {
                 logger.error(res.err);
@@ -171,10 +178,10 @@ const onMessageCreate = async (client) => {
               if (!res.err) {
                 if (res.data.textMentionsUser !== '') {
                   const reminder = '🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰';
-                  await timeUtils.sleepRandom(1000, 2000);
+                  await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await chat.sendMessage(reminder);
 
-                  await timeUtils.sleepRandom(1000, 2000);
+                  await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await chat.sendMessage(res.data.textMentionsUser, {
                     mentions: res.data.mentions,
                   });
@@ -189,7 +196,7 @@ const onMessageCreate = async (client) => {
               logger.info(`Processing: ${msgBody}`);
               const res = await usecase.getPresence(groupInfo);
               if (!res.err) {
-                await timeUtils.sleepRandom(1000, 2000);
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(res.data);
               } else {
                 logger.error(res.err);
