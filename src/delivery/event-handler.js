@@ -5,10 +5,10 @@ const constants = require('../lib/utils/constants');
 const config = require('../../config');
 const minSleepmsHandleBlasting = config.get('/minSleepmsHandleBlasting')
   ? config.get('/minSleepmsHandleBlasting')
-  : 1500; 
+  : 500; 
 const maxSleepmsHandleBlasting = config.get('/maxSleepmsHandleBlasting')
   ? config.get('/maxSleepmsHandleBlasting')
-  : 3000;
+  : 1500;
 
 const onMessage = async (client) => {
   client.on('message', async (msg) => {
