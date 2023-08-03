@@ -65,6 +65,7 @@ const onMessage = async (client) => {
           }
 
           if (msgBody === '.help') {
+            await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
             await msg.reply(constants.HELP_MESSAGE);
           }
 
@@ -166,6 +167,7 @@ const onMessageCreate = async (client) => {
             }
 
             if (msgBody === '.help') {
+              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(constants.HELP_MESSAGE);
             }
 
