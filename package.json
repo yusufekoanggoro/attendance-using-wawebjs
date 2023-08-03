@@ -1,0 +1,30 @@
+{
+  "name": "attendance-using-whatsappwebjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint 'src/**/*.js?(x)'",
+    "lint:fix": "npm run lint -- --fix"
+  },
+  "author": "Yusuf Eko Anggoro",
+  "license": "ISC",
+  "dependencies": {
+    "confidence": "^5.0.1",
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "fs": "0.0.1-security",
+    "moment": "^2.29.4",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.21.0",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.46.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.28.0"
+  }
+}
