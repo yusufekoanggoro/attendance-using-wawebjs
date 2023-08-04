@@ -77,12 +77,9 @@ const onMessage = async (client) => {
 
             if (!res.err) {
               if (res.data.textMentionsUser !== '') {
-                const reminder = '🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰';
+                const reminder = `🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰\n\n${res.data.textMentionsUser}`;
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await chat.sendMessage(reminder);
-
-                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await chat.sendMessage(res.data.textMentionsUser, {
+                await chat.sendMessage(reminder, {
                   mentions: res.data.mentions,
                 });
               }
@@ -179,12 +176,9 @@ const onMessageCreate = async (client) => {
 
               if (!res.err) {
                 if (res.data.textMentionsUser !== '') {
-                  const reminder = '🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰';
+                  const reminder = `🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰\n\n${res.data.textMentionsUser}`;
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await chat.sendMessage(reminder);
-
-                  await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await chat.sendMessage(res.data.textMentionsUser, {
+                  await chat.sendMessage(reminder, {
                     mentions: res.data.mentions,
                   });
                 }

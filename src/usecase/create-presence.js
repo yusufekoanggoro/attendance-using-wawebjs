@@ -10,31 +10,41 @@ const getFilePathPresence = async (groupInfo) => {
     let filePath;
 
     const startDate1 = moment().set({
-      hour: 7,
+      hour: 18,
       minute: 30,
       second: 0,
     });
     const endDate1 = moment().set({
-      hour: 10,
-      minute: 0,
+      hour: 20,
+      minute: 10,
       second: 0,
     });
     const startDate2 = moment().set({
+      hour: 7,
+      minute: 30,
+      second: 0,
+    });
+    const endDate2 = moment().set({
       hour: 10,
       minute: 0,
       second: 0,
     });
-    const endDate2 = moment().set({
+    const startDate3 = moment().set({
+      hour: 10,
+      minute: 0,
+      second: 0,
+    });
+    const endDate3 = moment().set({
       hour: 11,
       minute: 40,
       second: 0,
     });
-    const startDate3 = moment().set({
+    const startDate4 = moment().set({
       hour: 12,
       minute: 30,
       second: 0,
     });
-    const endDate3 = moment().set({
+    const endDate4 = moment().set({
       hour: 15,
       minute: 0,
       second: 0,
@@ -51,8 +61,11 @@ const getFilePathPresence = async (groupInfo) => {
       filePath = `./data/mk2.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
     } else if (currentDate >= startDate3 && currentDate <= endDate3) {
       filePath = `./data/mk3.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
+    } else if (currentDate >= startDate4 && currentDate <= endDate4) {
+      filePath = `./data/mk4.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
     } else {
       filePath = `./data/mkn-${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
+      return wrapper.error("waktu telah berakhir");
     }
 
     await checkBaseFoldeExists();
@@ -151,13 +164,10 @@ ${groupName}
 
 const getPresence = async (groupInfo) => {
   try {
-    const {
-      err,
-      data:filePath
-    } = await getFilePathPresence(groupInfo);
-    if(err) return filePath;
+    const filePathPresence = await getFilePathPresence(groupInfo);
+    if(filePathPresence.err) return filePathPresence;
 
-    const csvHandler = new CSVHandler(filePath);
+    const csvHandler = new CSVHandler(filePathPresence.data);
     const presenceData = await csvHandler.readAllRecords();
     if(presenceData.err) return presenceData;
 
@@ -203,6 +213,7 @@ const createPresence = async (payload) => {
 
     const filePathUserMaster = await getFilePathUserMaster(payload.groupInfo);
     const filePathPresence = await getFilePathPresence(payload.groupInfo);
+    if(filePathPresence.err) return filePathPresence;
 
     if(!filePathUserMaster.err && !filePathPresence.err){
       const csvUserMaster = new CSVHandler(filePathUserMaster.data);
