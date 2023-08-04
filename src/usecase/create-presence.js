@@ -55,7 +55,7 @@ const getFilePathPresence = async (groupInfo) => {
       name: groupName,
     } = groupInfo;
 
-    if (currentDate >= startDate1 && currentDate <= endDate1) {
+    if (currentDate >= startDate1 && currentDate <= endDate1 && currentDate.day() === 5) {
       filePath = `./data/mk1.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
     } else if (currentDate >= startDate2 && currentDate <= endDate2) {
       filePath = `./data/mk2.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
@@ -104,13 +104,13 @@ const getHeaderMessage = async (groupName) => {
   try {
     const currentDate = moment();
     const startDate1 = moment().set({
-      hour: 7,
+      hour: 18,
       minute: 30,
       second: 0,
     });
     const endDate1 = moment().set({
-      hour: 10,
-      minute: 0,
+      hour: 20,
+      minute: 10,
       second: 0,
     });
 
@@ -118,39 +118,59 @@ const getHeaderMessage = async (groupName) => {
 ${groupName}
 -`;
 
-    if (currentDate >= startDate1 && currentDate <= endDate1) {
+    if (
+      currentDate >= startDate1 
+      && currentDate <= endDate1
+      && currentDate.day() === 5
+      ) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
 (Pukul ${startDate1.format('HH:mm')} - ${endDate1.format('HH:mm')})`;
     }
 
     const startDate2 = moment().set({
-      hour: 10,
-      minute: 0,
+      hour: 7,
+      minute: 30,
       second: 0,
     });
     const endDate2 = moment().set({
-      hour: 11,
-      minute: 40,
+      hour: 10,
+      minute: 0,
       second: 0,
     });
     if (currentDate >= startDate2 && currentDate <= endDate2) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
-(Pukul ${startDate2.format('HH:mm')} - ${endDate2.format('HH:mm')})`;
+(Pukul ${startDate1.format('HH:mm')} - ${endDate1.format('HH:mm')})`;
     }
 
     const startDate3 = moment().set({
+      hour: 10,
+      minute: 0,
+      second: 0,
+    });
+    const endDate3 = moment().set({
+      hour: 11,
+      minute: 40,
+      second: 0,
+    });
+    if (currentDate >= startDate3 && currentDate <= endDate3) {
+      header = `Presensi ${currentDate.format('DD-MM-YYYY')}
+${groupName}
+(Pukul ${startDate2.format('HH:mm')} - ${endDate2.format('HH:mm')})`;
+    }
+
+    const startDate4 = moment().set({
       hour: 12,
       minute: 30,
       second: 0,
     });
-    const endDate3 = moment().set({
+    const endDate4 = moment().set({
       hour: 15,
       minute: 0,
       second: 0,
     });
-    if (currentDate >= startDate3 && currentDate <= endDate3) {
+    if (currentDate >= startDate4 && currentDate <= endDate4) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
 (Pukul ${startDate3.format('HH:mm')} - ${endDate3.format('HH:mm')})`;
@@ -181,7 +201,7 @@ const getPresence = async (groupInfo) => {
     const headerMessage = await getHeaderMessage(groupInfo.name);
     if(headerMessage.err) return headerMessage;
 
-    let finalString = `${headerMessage.data}\n`;
+    let finalString = `${headerMessage.data}\n\n`;
     newAttendanceData.forEach((v) => {
       finalString += v;
     });
