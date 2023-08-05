@@ -87,7 +87,7 @@ const createUser = async (payload) => {
             return wrapper.data('Berhasil Daftar');
           }
   
-          return wrapper.error('Wa number atau npm sudah ada');
+          return wrapper.error('no wa atau npm sudah terdaftar');
 
         }
 
