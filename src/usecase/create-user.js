@@ -84,7 +84,7 @@ const createUser = async (payload) => {
             const writeData = await csvHandler.writeData();
             if (writeData.err) return writeData;
   
-            return wrapper.data('Berhasil Daftar');
+            return wrapper.data('berhasil daftar, silahkan ketik .presensi');
           }
   
           return wrapper.error('no wa atau npm sudah terdaftar');

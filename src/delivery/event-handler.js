@@ -55,6 +55,10 @@ const onMessage = async (client) => {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(res.err);
               }
+              if(res.err === 'no wa belum terdaftar'){
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(constants.REPLY_USER_NOT_REGISTERED);
+              }
               logger.error(res.err);
             }
             logger.info(`Processed: ${msgBody}`);
@@ -84,12 +88,15 @@ const onMessage = async (client) => {
             });
 
             if (!res.err) {
-              if (res.data.textMentionsUser !== '') {
+              if (res.data.textMentionsUser !== '' && res.data.mentions.length) {
                 const reminder = `🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰\n\n${res.data.textMentionsUser}`;
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await chat.sendMessage(reminder, {
                   mentions: res.data.mentions,
                 });
+              }
+              if (!res.data.mentions.length) {
+                await msg.reply('mahasiwa yang terdaftar sudah melakukan presensi');
               }
             } else {
               if(res.err === 'waktu telah berakhir'){
@@ -170,6 +177,10 @@ const onMessageCreate = async (client) => {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(res.err);
                 }
+                if(res.err === 'no wa belum terdaftar'){
+                  await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                  await msg.reply(constants.REPLY_USER_NOT_REGISTERED);
+                }
                 logger.error(res.err);
               }
               logger.info(`Processed: ${msgBody}`);
@@ -199,12 +210,15 @@ const onMessageCreate = async (client) => {
               });
 
               if (!res.err) {
-                if (res.data.textMentionsUser !== '') {
+                if (res.data.textMentionsUser !== '' && res.data.mentions.length) {
                   const reminder = `🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰\n\n${res.data.textMentionsUser}`;
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await chat.sendMessage(reminder, {
                     mentions: res.data.mentions,
                   });
+                }
+                if (!res.data.mentions.length) {
+                  await msg.reply('mahasiwa yang terdaftar sudah melakukan presensi');
                 }
               } else {
                 if(res.err === 'waktu telah berakhir'){

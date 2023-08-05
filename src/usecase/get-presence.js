@@ -76,7 +76,7 @@ ${groupName}
     if (currentDate >= startDate4 && currentDate <= endDate4 && currentDate.day() === 6) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
-(Pukul ${startDate3.format('HH:mm')} - ${endDate3.format('HH:mm')})`;
+(Pukul ${startDate4.format('HH:mm')} - ${endDate4.format('HH:mm')})`;
     }
 
     return wrapper.data(header);

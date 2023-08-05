@@ -173,7 +173,7 @@ ${groupName}
     if (currentDate >= startDate4 && currentDate <= endDate4) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
-(Pukul ${startDate3.format('HH:mm')} - ${endDate3.format('HH:mm')})`;
+(Pukul ${startDate4.format('HH:mm')} - ${endDate4.format('HH:mm')})`;
     }
 
     return wrapper.data(header);
@@ -239,7 +239,7 @@ const createPresence = async (payload) => {
       const csvUserMaster = new CSVHandler(filePathUserMaster.data);
 
       const findUser = await csvUserMaster.findByField('wa_number', userId);
-      if(findUser.err) return findUser;
+      if(findUser.err) return wrapper.error('no wa belum terdaftar');
       
       const npm = findUser.data[0].npm;
       const fullName = findUser.data[0].full_name;

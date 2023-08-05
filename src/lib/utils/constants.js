@@ -51,7 +51,12 @@ Available Commands:
     
 Feel free to explore and interact with the bot 🤗`;
 
+const REPLY_USER_NOT_REGISTERED = `no wa belum terdaftar
+silahlan ketik .daftar npm nama
+lalu .presensi`;
+
 module.exports = {
   LogLevelColor,
   HELP_MESSAGE,
+  REPLY_USER_NOT_REGISTERED
 };
