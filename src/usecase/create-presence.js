@@ -55,13 +55,24 @@ const getFilePathPresence = async (groupInfo) => {
       name: groupName,
     } = groupInfo;
 
-    if (currentDate >= startDate1 && currentDate <= endDate1 && currentDate.day() === 5) {
+    const validations = [];
+
+    validations.push(currentDate.day() === 5)
+    if (currentDate >= startDate1 && currentDate <= endDate1 && validations.includes(true)) {
       filePath = `./data/mk1.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-    } else if (currentDate >= startDate2 && currentDate <= endDate2 && currentDate.day() === 6) {
+    } 
+    
+    validations = [];
+    validations.push(currentDate.day() === 6, currentDate.day() === 7)
+    if (currentDate >= startDate2 && currentDate <= endDate2 && validations.includes(true)) {
       filePath = `./data/mk2.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-    } else if (currentDate >= startDate3 && currentDate <= endDate3 && currentDate.day() === 6) {
+    } 
+    
+    if (currentDate >= startDate3 && currentDate <= endDate3 && validations.includes(true)) {
       filePath = `./data/mk3.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-    } else if (currentDate >= startDate4 && currentDate <= endDate4 && currentDate.day() === 6) {
+    } 
+    
+    if (currentDate >= startDate4 && currentDate <= endDate4 && validations.includes(true)) {
       filePath = `./data/mk4.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
     } else {
       filePath = `./data/mkn-${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
