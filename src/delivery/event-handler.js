@@ -10,7 +10,9 @@ const maxSleepmsHandleBlasting = config.get('/maxSleepmsHandleBlasting')
   ? config.get('/maxSleepmsHandleBlasting')
   : 1500;
 
-const onMessage = async (client) => {
+const ucSuddenPresence = require('../usecase/sudden-presence'); 
+
+const onMessage = async (client, normalMode) => {
   client.on('message', async (msg) => {
     try {
       const chat = await msg.getChat();
@@ -46,20 +48,27 @@ const onMessage = async (client) => {
 
           if (msgBody === '.presensi') {
             logger.info(`Processing: ${msgBody}`);
-            const res = await usecase.createPresence({ groupInfo, userInfo });
-            if (!res.err) {
+
+            let ucRes;
+            if(normalMode){
+              ucRes = await usecase.createPresence({ groupInfo, userInfo });
+            }else{
+              ucRes = await ucSuddenPresence.createPresence({ groupInfo, userInfo });
+            }
+
+            if (!ucRes.err) {
               await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-              await msg.reply(res.data);
+              await msg.reply(ucRes.data);
             } else {
-              if(res.err === 'waktu telah berakhir'){
+              if(ucRes.err === 'waktu telah berakhir'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply('Bot: Offline.');
+                await msg.reply(ucRes.err);
               }
-              if(res.err === 'no wa belum terdaftar'){
+              if(ucRes.err === 'no wa belum terdaftar'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(constants.REPLY_USER_NOT_REGISTERED);
               }
-              logger.error(res.err);
+              logger.error(ucRes.err);
             }
             logger.info(`Processed: ${msgBody}`);
           }
@@ -83,46 +92,62 @@ const onMessage = async (client) => {
 
           if (msgBody === '.reminder') {
             logger.info(`Processing: ${msgBody}`);
-            const res = await usecase.sendReminder({
-              groupInfo, userInfo, client, chat,
-            });
 
-            if (!res.err) {
-              if (res.data.textMentionsUser !== '' && res.data.mentions.length) {
-                const reminder = `🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰\n\n${res.data.textMentionsUser}`;
+            let ucRes;
+            if(normalMode){
+              ucRes = await usecase.sendReminder({
+                groupInfo, userInfo, client, chat,
+              });
+            }else{
+              ucRes = await ucSuddenPresence.sendReminder({
+                groupInfo, userInfo, client, chat,
+              });
+            }
+
+            if (!ucRes.err) {
+              if (ucRes.data.textMentionsUser !== '' && ucRes.data.mentions.length) {
+                const reminder = `🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰\n\n${ucRes.data.textMentionsUser}`;
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await chat.sendMessage(reminder, {
-                  mentions: res.data.mentions,
+                  mentions: ucRes.data.mentions,
                 });
               }
-              if (!res.data.mentions.length) {
+              if (!ucRes.data.mentions.length) {
                 await msg.reply('mahasiwa yang terdaftar sudah melakukan presensi');
               }
             } else {
-              if(res.err === 'waktu telah berakhir'){
+              if(ucRes.err === 'waktu telah berakhir'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply('Bot: Offline.');
+                await msg.reply(ucRes.err);
               }
-              logger.error(res.err);
+              logger.error(ucRes.err);
             }
             logger.info(`Processed: ${msgBody}`);
           }
 
           if (msgBody === '.kehadiran') {
             logger.info(`Processing: ${msgBody}`);
-            const res = await usecase.getPresence(groupInfo);
-            if (!res.err) {
+
+            let ucRes;
+            if(normalMode){
+              ucRes = await usecase.getPresence(groupInfo);
+            }else{
+              ucRes = await ucSuddenPresence.getPresence(groupInfo);
+            }
+
+            if (!ucRes.err) {
               await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-              await msg.reply(res.data);
+              await msg.reply(ucRes.data);
             } else {
-              if(res.err === 'waktu telah berakhir'){
+              if(ucRes.err === 'waktu telah berakhir'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply('Bot: Offline.');
+                await msg.reply(ucRes.err);
               }
-              logger.error(res.err);
+              logger.error(ucRes.err);
             }
             logger.info(`Processed: ${msgBody}`);
           }
+
         }
       }
     } catch (error) {
@@ -149,7 +174,7 @@ const onMessageCreate = async (client) => {
               name: '',
               npm: '',
             };
-
+  
             if (msgBody.startsWith('.daftar ')) {
               logger.info(`Processing: ${msgBody}`);
               const res = await usecase.createUser({ msg, groupInfo, userInfo });
@@ -165,27 +190,34 @@ const onMessageCreate = async (client) => {
               }
               logger.info(`Processed: ${msgBody}`);
             }
-
+  
             if (msgBody === '.presensi') {
               logger.info(`Processing: ${msgBody}`);
-              const res = await usecase.createPresence({ groupInfo, userInfo });
-              if (!res.err) {
+  
+              let ucRes;
+              if(normalMode){
+                ucRes = await usecase.createPresence({ groupInfo, userInfo });
+              }else{
+                ucRes = await ucSuddenPresence.createPresence({ groupInfo, userInfo });
+              }
+  
+              if (!ucRes.err) {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(res.data);
+                await msg.reply(ucRes.data);
               } else {
-                if(res.err === 'waktu telah berakhir'){
+                if(ucRes.err === 'waktu telah berakhir'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await msg.reply('Bot: Offline.');
+                  await msg.reply(ucRes.err);
                 }
-                if(res.err === 'no wa belum terdaftar'){
+                if(ucRes.err === 'no wa belum terdaftar'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(constants.REPLY_USER_NOT_REGISTERED);
                 }
-                logger.error(res.err);
+                logger.error(ucRes.err);
               }
               logger.info(`Processed: ${msgBody}`);
             }
-
+  
             if (msgBody === '.peserta') {
               logger.info(`Processing: ${msgBody}`);
               const res = await usecase.getParticipants({ groupInfo, userInfo });
@@ -197,54 +229,70 @@ const onMessageCreate = async (client) => {
               }
               logger.info(`Processed: ${msgBody}`);
             }
-
+  
             if (msgBody === '.help') {
               await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(constants.HELP_MESSAGE);
             }
-
+  
             if (msgBody === '.reminder') {
               logger.info(`Processing: ${msgBody}`);
-              const res = await usecase.sendReminder({
-                groupInfo, userInfo, client, chat,
-              });
-
-              if (!res.err) {
-                if (res.data.textMentionsUser !== '' && res.data.mentions.length) {
-                  const reminder = `🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰\n\n${res.data.textMentionsUser}`;
+  
+              let ucRes;
+              if(normalMode){
+                ucRes = await usecase.sendReminder({
+                  groupInfo, userInfo, client, chat,
+                });
+              }else{
+                ucRes = await ucSuddenPresence.sendReminder({
+                  groupInfo, userInfo, client, chat,
+                });
+              }
+  
+              if (!ucRes.err) {
+                if (ucRes.data.textMentionsUser !== '' && ucRes.data.mentions.length) {
+                  const reminder = `🤖 Reminder: Jangan lupa untuk melakukan presensi hari ini! ⏰\n\n${ucRes.data.textMentionsUser}`;
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await chat.sendMessage(reminder, {
-                    mentions: res.data.mentions,
+                    mentions: ucRes.data.mentions,
                   });
                 }
-                if (!res.data.mentions.length) {
+                if (!ucRes.data.mentions.length) {
                   await msg.reply('mahasiwa yang terdaftar sudah melakukan presensi');
                 }
               } else {
-                if(res.err === 'waktu telah berakhir'){
+                if(ucRes.err === 'waktu telah berakhir'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await msg.reply('Bot: Offline.');
+                  await msg.reply(ucRes.err);
                 }
-                logger.error(res.err);
+                logger.error(ucRes.err);
               }
               logger.info(`Processed: ${msgBody}`);
             }
-
+  
             if (msgBody === '.kehadiran') {
               logger.info(`Processing: ${msgBody}`);
-              const res = await usecase.getPresence(groupInfo);
-              if (!res.err) {
+  
+              let ucRes;
+              if(normalMode){
+                ucRes = await usecase.getPresence(groupInfo);
+              }else{
+                ucRes = await ucSuddenPresence.getPresence(groupInfo);
+              }
+  
+              if (!ucRes.err) {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(res.data);
+                await msg.reply(ucRes.data);
               } else {
-                if(res.err === 'waktu telah berakhir'){
+                if(ucRes.err === 'waktu telah berakhir'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await msg.reply('Bot: Offline.');
+                  await msg.reply(ucRes.err);
                 }
-                logger.error(res.err);
+                logger.error(ucRes.err);
               }
               logger.info(`Processed: ${msgBody}`);
             }
+  
           }
         }
       }
