@@ -86,7 +86,7 @@ const getFilePathPresence = async (groupInfo) => {
       name: groupName,
     } = groupInfo;
 
-    const validations = [];
+    let validations = [];
 
     validations.push(currentDate.day() === 5)
     if (currentDate >= startDate1 && currentDate <= endDate1 && validations.includes(true)) {

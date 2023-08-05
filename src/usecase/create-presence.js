@@ -55,7 +55,7 @@ const getFilePathPresence = async (groupInfo) => {
       name: groupName,
     } = groupInfo;
 
-    const validations = [];
+    let validations = [];
 
     validations.push(currentDate.day() === 5)
     if (currentDate >= startDate1 && currentDate <= endDate1 && validations.includes(true)) {
@@ -129,10 +129,13 @@ const getHeaderMessage = async (groupName) => {
 ${groupName}
 -`;
 
+    let validations = [];
+
+    validations.push(currentDate.day() === 5)
     if (
       currentDate >= startDate1 
       && currentDate <= endDate1
-      && currentDate.day() === 5
+      && validations.includes(true)
       ) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
@@ -149,7 +152,10 @@ ${groupName}
       minute: 0,
       second: 0,
     });
-    if (currentDate >= startDate2 && currentDate <= endDate2) {
+
+    validations = [];
+    validations.push(currentDate.day() === 6, currentDate.day() === 7);
+    if (currentDate >= startDate2 && currentDate <= endDate2 && validations.includes(true)) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
 (Pukul ${startDate1.format('HH:mm')} - ${endDate1.format('HH:mm')})`;
@@ -165,7 +171,10 @@ ${groupName}
       minute: 40,
       second: 0,
     });
-    if (currentDate >= startDate3 && currentDate <= endDate3) {
+
+    validations = [];
+    validations.push(currentDate.day() === 6, currentDate.day() === 7);
+    if (currentDate >= startDate3 && currentDate <= endDate3 && validations.includes(true)) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
 (Pukul ${startDate2.format('HH:mm')} - ${endDate2.format('HH:mm')})`;
@@ -181,7 +190,10 @@ ${groupName}
       minute: 10,
       second: 0,
     });
-    if (currentDate >= startDate4 && currentDate <= endDate4) {
+
+    validations = [];
+    validations.push(currentDate.day() === 6, currentDate.day() === 7);
+    if (currentDate >= startDate4 && currentDate <= endDate4 && validations.includes(true)) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
 (Pukul ${startDate4.format('HH:mm')} - ${endDate4.format('HH:mm')})`;
