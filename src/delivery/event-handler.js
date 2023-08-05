@@ -53,7 +53,7 @@ const onMessage = async (client) => {
             } else {
               if(res.err === 'waktu telah berakhir'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(res.err);
+                await msg.reply('Bot: Offline.');
               }
               if(res.err === 'no wa belum terdaftar'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
@@ -101,7 +101,7 @@ const onMessage = async (client) => {
             } else {
               if(res.err === 'waktu telah berakhir'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(res.err);
+                await msg.reply('Bot: Offline.');
               }
               logger.error(res.err);
             }
@@ -117,7 +117,7 @@ const onMessage = async (client) => {
             } else {
               if(res.err === 'waktu telah berakhir'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(res.err);
+                await msg.reply('Bot: Offline.');
               }
               logger.error(res.err);
             }
@@ -175,7 +175,7 @@ const onMessageCreate = async (client) => {
               } else {
                 if(res.err === 'waktu telah berakhir'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await msg.reply(res.err);
+                  await msg.reply('Bot: Offline.');
                 }
                 if(res.err === 'no wa belum terdaftar'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
@@ -223,7 +223,7 @@ const onMessageCreate = async (client) => {
               } else {
                 if(res.err === 'waktu telah berakhir'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await msg.reply(res.err);
+                  await msg.reply('Bot: Offline.');
                 }
                 logger.error(res.err);
               }
@@ -239,7 +239,7 @@ const onMessageCreate = async (client) => {
               } else {
                 if(res.err === 'waktu telah berakhir'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await msg.reply('Bot: Offline. Alasan: Ingin makan cokelat. Jangan ganggu sampai aku puas makan!');
+                  await msg.reply('Bot: Offline.');
                 }
                 logger.error(res.err);
               }
