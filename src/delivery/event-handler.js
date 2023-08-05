@@ -239,7 +239,7 @@ const onMessageCreate = async (client) => {
               } else {
                 if(res.err === 'waktu telah berakhir'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await msg.reply(res.err);
+                  await msg.reply('Bot: Offline. Alasan: Ingin makan cokelat. Jangan ganggu sampai aku puas makan!');
                 }
                 logger.error(res.err);
               }

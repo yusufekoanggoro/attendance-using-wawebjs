@@ -45,8 +45,8 @@ const getFilePathPresence = async (groupInfo) => {
       second: 0,
     });
     const endDate4 = moment().set({
-      hour: 15,
-      minute: 0,
+      hour: 14,
+      minute: 10,
       second: 0,
     });
 
@@ -166,8 +166,8 @@ ${groupName}
       second: 0,
     });
     const endDate4 = moment().set({
-      hour: 15,
-      minute: 0,
+      hour: 14,
+      minute: 10,
       second: 0,
     });
     if (currentDate >= startDate4 && currentDate <= endDate4) {
