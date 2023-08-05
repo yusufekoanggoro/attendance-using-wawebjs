@@ -57,11 +57,11 @@ const getFilePathPresence = async (groupInfo) => {
 
     if (currentDate >= startDate1 && currentDate <= endDate1 && currentDate.day() === 5) {
       filePath = `./data/mk1.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-    } else if (currentDate >= startDate2 && currentDate <= endDate2) {
+    } else if (currentDate >= startDate2 && currentDate <= endDate2 && currentDate.day() === 6) {
       filePath = `./data/mk2.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-    } else if (currentDate >= startDate3 && currentDate <= endDate3) {
+    } else if (currentDate >= startDate3 && currentDate <= endDate3 && currentDate.day() === 6) {
       filePath = `./data/mk3.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-    } else if (currentDate >= startDate4 && currentDate <= endDate4) {
+    } else if (currentDate >= startDate4 && currentDate <= endDate4 && currentDate.day() === 6) {
       filePath = `./data/mk4.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
     } else {
       filePath = `./data/mkn-${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;

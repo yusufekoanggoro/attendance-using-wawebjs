@@ -41,7 +41,7 @@ ${groupName}
       minute: 0,
       second: 0,
     });
-    if (currentDate >= startDate2 && currentDate <= endDate2) {
+    if (currentDate >= startDate2 && currentDate <= endDate2 && currentDate.day() === 6) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
 (Pukul ${startDate1.format('HH:mm')} - ${endDate1.format('HH:mm')})`;
@@ -57,7 +57,7 @@ ${groupName}
       minute: 40,
       second: 0,
     });
-    if (currentDate >= startDate3 && currentDate <= endDate3) {
+    if (currentDate >= startDate3 && currentDate <= endDate3 && currentDate.day() === 6) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
 (Pukul ${startDate2.format('HH:mm')} - ${endDate2.format('HH:mm')})`;
@@ -73,7 +73,7 @@ ${groupName}
       minute: 0,
       second: 0,
     });
-    if (currentDate >= startDate4 && currentDate <= endDate4) {
+    if (currentDate >= startDate4 && currentDate <= endDate4 && currentDate.day() === 6) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
 (Pukul ${startDate3.format('HH:mm')} - ${endDate3.format('HH:mm')})`;
