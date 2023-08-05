@@ -92,6 +92,10 @@ const onMessage = async (client) => {
                 });
               }
             } else {
+              if(res.err === 'waktu telah berakhir'){
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(res.err);
+              }
               logger.error(res.err);
             }
             logger.info(`Processed: ${msgBody}`);
@@ -104,6 +108,10 @@ const onMessage = async (client) => {
               await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(res.data);
             } else {
+              if(res.err === 'waktu telah berakhir'){
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(res.err);
+              }
               logger.error(res.err);
             }
             logger.info(`Processed: ${msgBody}`);
@@ -199,6 +207,10 @@ const onMessageCreate = async (client) => {
                   });
                 }
               } else {
+                if(res.err === 'waktu telah berakhir'){
+                  await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                  await msg.reply(res.err);
+                }
                 logger.error(res.err);
               }
               logger.info(`Processed: ${msgBody}`);
@@ -211,6 +223,10 @@ const onMessageCreate = async (client) => {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(res.data);
               } else {
+                if(res.err === 'waktu telah berakhir'){
+                  await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                  await msg.reply(res.err);
+                }
                 logger.error(res.err);
               }
               logger.info(`Processed: ${msgBody}`);

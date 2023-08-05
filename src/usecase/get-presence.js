@@ -210,7 +210,7 @@ const getPresence = async (groupInfo) => {
   
       const csvUserMaster = new CSVHandler(filePathUserMaster);
       for (const data of presenceData.data) {
-        const findUserByWaNumber = await csvUserMaster.findByField('npm', data.npm);
+        const findUserByWaNumber = await csvUserMaster.findByField('wa_number', data.wa_number);
 
         let name = '';
         if(!findUserByWaNumber.err){
