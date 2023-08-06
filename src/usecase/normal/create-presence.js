@@ -9,11 +9,13 @@ const createPresence = async (payload) => {
       id: userId,
     } = payload.userInfo;
 
+    const isTimeOver = await sharedUc.checkTimeOver();
+    if(isTimeOver.err) return isTimeOver;
+
     const filePathUserMaster = await sharedUc.getFilePathUserMaster(payload.groupInfo);
     const filePathPresence = await sharedUc.getFilePathPresence(payload.groupInfo);
-    if (filePathPresence.err) return filePathPresence;
 
-    if (!filePathUserMaster.err) {
+    if (!filePathUserMaster.err && !filePathPresence.err) {
       const csvUserMaster = new CSVHandler(filePathUserMaster.data);
 
       const findUser = await csvUserMaster.findOneByField('wa_number', userId);

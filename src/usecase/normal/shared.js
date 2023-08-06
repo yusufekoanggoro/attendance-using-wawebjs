@@ -84,7 +84,7 @@ const getFilePathPresence = async (groupInfo) => {
       filePath = `./data/${groupName}/mk4.${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
     } else {
       filePath = `./data/${groupName}/mkn-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-      return wrapper.error('waktu telah berakhir');
+      return wrapper.data(filePath);
     }
 
     await checkBaseFoldeExists(groupName);
@@ -243,10 +243,79 @@ const getPresence = async (groupInfo) => {
   }
 };
 
+const checkTimeOver = async () => {
+  try {
+    const currentDate = moment();
+
+    const startDate1 = moment().set({
+      hour: 18,
+      minute: 30,
+      second: 0,
+    });
+    const endDate1 = moment().set({
+      hour: 20,
+      minute: 10,
+      second: 0,
+    });
+    const startDate2 = moment().set({
+      hour: 7,
+      minute: 30,
+      second: 0,
+    });
+    const endDate2 = moment().set({
+      hour: 10,
+      minute: 0,
+      second: 0,
+    });
+    const startDate3 = moment().set({
+      hour: 10,
+      minute: 0,
+      second: 0,
+    });
+    const endDate3 = moment().set({
+      hour: 11,
+      minute: 40,
+      second: 0,
+    });
+    const startDate4 = moment().set({
+      hour: 12,
+      minute: 30,
+      second: 0,
+    });
+    const endDate4 = moment().set({
+      hour: 14,
+      minute: 10,
+      second: 0,
+    });
+
+    let validations = [];
+
+    validations.push(currentDate.day() === 5);
+    if (currentDate >= startDate1 && currentDate <= endDate1 && validations.includes(true)) {
+      return wrapper.data('Ok');
+    }
+
+    validations = [];
+    validations.push(currentDate.day() === 6, currentDate.day() === 0);
+    if (currentDate >= startDate2 && currentDate <= endDate2 && validations.includes(true)) {
+      return wrapper.data('Ok');
+    } else if (currentDate >= startDate3 && currentDate <= endDate3 && validations.includes(true)) {
+      return wrapper.data('Ok');
+    } else if (currentDate >= startDate4 && currentDate <= endDate4 && validations.includes(true)) {
+      return wrapper.data('Ok');
+    } else {
+      return wrapper.error('waktu telah berakhir');
+    }
+  } catch (error) {
+    return wrapper.error(error);
+  }
+};
+
 module.exports = {
   checkBaseFoldeExists,
   getFilePathPresence,
   getFilePathUserMaster,
   getHeaderMessage,
   getPresence,
+  checkTimeOver
 };

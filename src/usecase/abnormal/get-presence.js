@@ -4,11 +4,11 @@ const sharedUc = require('./shared');
 
 const getPresence = async (groupInfo) => {
   try {
+
     const filePathUserMaster = await sharedUc.getFilePathUserMaster(groupInfo);
     const filePathPresence = await sharedUc.getFilePathPresence(groupInfo);
-    if(filePathPresence.err) return filePathPresence;
 
-    if (!filePathUserMaster.err) {
+    if (!filePathUserMaster.err && !filePathPresence.err) {
       const csvHandler = new CSVHandler(filePathPresence.data);
       const presenceData = await csvHandler.readAllRecords();
       if (presenceData.err) return presenceData;
