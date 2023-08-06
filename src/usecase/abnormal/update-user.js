@@ -65,15 +65,6 @@ const updateUser = async (payload) => {
             const writeData = await csvHandler.writeData();
             if (writeData.err) return writeData;
 
-            const csvPresence = new CSVHandler(filePathPresence.data);
-            const resUpdatePresence = await csvPresence.updateRecordByWaNumber(updateRecord);
-            if (!resUpdatePresence.err) {
-              const writeDataPresence = await csvPresence.writeData();
-              if (writeDataPresence.err) return writeDataPresence;
-            } else {
-              logger.info(resUpdatePresence.err);
-            }
-
             return wrapper.data('berhasil update');
           }
 

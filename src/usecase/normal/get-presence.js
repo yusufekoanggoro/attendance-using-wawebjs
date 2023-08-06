@@ -14,7 +14,7 @@ const getPresence = async (groupInfo) => {
     if (!filePathUserMaster.err && !filePathPresence.err) {
       const csvHandler = new CSVHandler(filePathPresence.data);
       const presenceData = await csvHandler.readAllRecords();
-      if (presenceData.err) return wrapper.error('data not found');;
+      if (presenceData.err) return wrapper.error('data not found');
 
       const newAttendanceData = [];
       let sequenceNumber = 1;
@@ -24,9 +24,11 @@ const getPresence = async (groupInfo) => {
         const findUserByWaNumber = await csvUserMaster.findOneByField('wa_number', data.wa_number);
 
         let name = '';
+        let npm = '';
         if (!findUserByWaNumber.err) {
           name = findUserByWaNumber.data.full_name;
-          newAttendanceData.push(`${sequenceNumber}. ${data.npm} ${name}\n`);
+          npm = findUserByWaNumber.data.npm;
+          newAttendanceData.push(`${sequenceNumber}. ${npm} ${name}\n`);
           sequenceNumber += 1;
         }
       }

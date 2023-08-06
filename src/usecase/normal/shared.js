@@ -88,7 +88,6 @@ const getFilePathPresence = async (groupInfo) => {
       filePath = `./data/${groupName}/${date}/mk4.${groupId}-attendancerecord.csv`;
     } else {
       filePath = `./data/${groupName}/${date}/mkn-${groupId}-attendancerecord.csv`;
-      return wrapper.data(filePath);
     }
 
     await checkBaseFoldeExists(groupName, date);

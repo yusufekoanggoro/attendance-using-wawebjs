@@ -28,11 +28,7 @@ const createPresence = async (payload) => {
 
       const findUserByNpm = await csvPresence.findOneByField('npm', npm);
       if (findUserByNpm.err) {
-        const newRecord = {
-          wa_number: userId,
-          npm,
-          full_name: fullName,
-        };
+        const newRecord = { wa_number: userId };
 
         csvPresence.createRecord(newRecord);
 

@@ -21,9 +21,11 @@ const getPresence = async (groupInfo) => {
         const findUserByWaNumber = await csvUserMaster.findOneByField('wa_number', data.wa_number);
 
         let name = '';
+        let npm = '';
         if (!findUserByWaNumber.err) {
           name = findUserByWaNumber.data.full_name;
-          newAttendanceData.push(`${sequenceNumber}. ${data.npm} ${name}\n`);
+          npm = findUserByWaNumber.data.npm;
+          newAttendanceData.push(`${sequenceNumber}. ${npm} ${name}\n`);
           sequenceNumber += 1;
         }
       }

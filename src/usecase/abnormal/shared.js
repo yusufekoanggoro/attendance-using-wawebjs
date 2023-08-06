@@ -103,10 +103,32 @@ const getPresence = async (groupInfo) => {
   }
 };
 
+const checkFilePathPresenceExist = async (groupInfo) => {
+  try {
+    const {
+      id: groupId,
+      name: groupName,
+    } = groupInfo;
+
+    const date = moment().format('DD-MM-YYYY');
+    const filePath = `./data/${groupName}/${date}/mkn-${groupId}-attendancerecord.csv`;
+
+    const checkFileExists = await fileUtils.checkFileExists(filePath);
+    if (!checkFileExists) {
+      return wrapper.error('file not found');
+    }
+
+    return wrapper.data(filePath);
+  } catch (error) {
+    return wrapper.error(error);
+  }
+};
+
 module.exports = {
   checkBaseFoldeExists,
   getFilePathPresence,
   getFilePathUserMaster,
   getHeaderMessage,
   getPresence,
+  checkFilePathPresenceExist
 };
