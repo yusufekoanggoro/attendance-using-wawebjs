@@ -50,7 +50,7 @@ const updateUser = async (payload) => {
 
             if (npmInput !== oldNpm) {
               const findUserByNpm = await csvHandler.findOneByField('npm', npm);
-              if (!findUserByNpm.err) return wrapper.error('npm sudah terdaftar');
+              if (!findUserByNpm.err) return wrapper.error('gagal edit, npm sudah terdaftar');
             }
 
             const updateRecord = {
@@ -77,14 +77,14 @@ const updateUser = async (payload) => {
             return wrapper.data('berhasil update');
           }
 
-          return wrapper.error('pengguna belum terdaftar');
+          return wrapper.error('gagal edit, pengguna belum terdaftar');
         }
 
         return wrapper.error('file not found');
       }
     }
 
-    return wrapper.error('Format pesan salah');
+    return wrapper.error('gagal edit, format pesan salah');
   } catch (error) {
     return wrapper.error(error);
   }

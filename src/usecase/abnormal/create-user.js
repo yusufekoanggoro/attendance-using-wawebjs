@@ -38,10 +38,12 @@ const createUser = async (payload) => {
         const filePathUserMaster = await sharedUc.getFilePathUserMaster(groupInfo);
         if (!filePathUserMaster.err) {
           const csvHandler = new CSVHandler(filePathUserMaster.data);
-
+          
           const findUserByWaNumber = await csvHandler.findOneByField('wa_number', userId);
-          const findUserByNpm = await csvHandler.findOneByField('npm', npm);
-          if (findUserByWaNumber.err && findUserByNpm.err) {
+          if (findUserByWaNumber.err) {
+            const findUserByNpm = await csvHandler.findOneByField('npm', npm);
+            if(findUserByNpm.err) return wrapper.error('gagal daftar, npm sudah terdaftar');
+            
             const newRecord = {
               wa_number: userId,
               npm,
@@ -55,14 +57,14 @@ const createUser = async (payload) => {
             return wrapper.data('berhasil daftar, silahkan ketik .presensi');
           }
 
-          return wrapper.error('pengguna atau npm sudah terdaftar');
+          return wrapper.error('gagal daftar, pengguna sudah terdaftar');
         }
 
         return wrapper.error('file not found');
       }
     }
 
-    return wrapper.error('Format pesan salah');
+    return wrapper.error('gagal daftar, format pesan salah');
   } catch (error) {
     return wrapper.error(error);
   }

@@ -19,7 +19,7 @@ const createPresence = async (payload) => {
       const csvUserMaster = new CSVHandler(filePathUserMaster.data);
 
       const findUser = await csvUserMaster.findOneByField('wa_number', userId);
-      if (findUser.err) return wrapper.error('pengguna belum terdaftar');
+      if (findUser.err) return wrapper.error('gagal presensi, pengguna belum terdaftar');
 
       const { npm } = findUser.data;
       const fullName = findUser.data.full_name;
