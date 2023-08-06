@@ -37,9 +37,9 @@ const onMessage = async (client, normalMode) => {
               await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(res.data);
             } else {
-              if(res.err === 'no wa atau npm sudah terdaftar'){
+              if(res.err === 'pengguna atau npm sudah terdaftar'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(res.err);
+                await msg.reply(constants.REPLY_USER_REGISTERED);
               }
               logger.error(res.err);
             }
@@ -64,7 +64,7 @@ const onMessage = async (client, normalMode) => {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(ucRes.err);
               }
-              if(ucRes.err === 'no wa belum terdaftar'){
+              if(ucRes.err === 'pengguna belum terdaftar'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(constants.REPLY_USER_NOT_REGISTERED);
               }
@@ -113,7 +113,7 @@ const onMessage = async (client, normalMode) => {
                 });
               }
               if (!ucRes.data.mentions.length) {
-                await msg.reply('mahasiwa yang terdaftar sudah melakukan presensi');
+                await msg.reply('semua mahasiwa yang terdaftar sudah melakukan presensi');
               }
             } else {
               if(ucRes.err === 'waktu telah berakhir'){
@@ -182,9 +182,9 @@ const onMessageCreate = async (client) => {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(res.data);
               } else {
-                if(res.err === 'no wa atau npm sudah terdaftar'){
+                if(res.err === 'pengguna atau npm sudah terdaftar'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await msg.reply(res.err);
+                  await msg.reply(constants.REPLY_USER_REGISTERED);
                 }
                 logger.error(res.err);
               }
@@ -209,7 +209,7 @@ const onMessageCreate = async (client) => {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(ucRes.err);
                 }
-                if(ucRes.err === 'no wa belum terdaftar'){
+                if(ucRes.err === 'pengguna belum terdaftar'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(constants.REPLY_USER_NOT_REGISTERED);
                 }
@@ -258,7 +258,7 @@ const onMessageCreate = async (client) => {
                   });
                 }
                 if (!ucRes.data.mentions.length) {
-                  await msg.reply('mahasiwa yang terdaftar sudah melakukan presensi');
+                  await msg.reply('semua mahasiwa yang terdaftar sudah melakukan presensi');
                 }
               } else {
                 if(ucRes.err === 'waktu telah berakhir'){
