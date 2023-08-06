@@ -42,7 +42,7 @@ const createUser = async (payload) => {
           const findUserByWaNumber = await csvHandler.findOneByField('wa_number', userId);
           if (findUserByWaNumber.err) {
             const findUserByNpm = await csvHandler.findOneByField('npm', npm);
-            if(findUserByNpm.err) return wrapper.error('gagal daftar, npm sudah terdaftar');
+            if(!findUserByNpm.err) return wrapper.error('gagal daftar, npm sudah terdaftar');
             
             const newRecord = {
               wa_number: userId,

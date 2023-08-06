@@ -14,7 +14,7 @@ const getPresence = async (groupInfo) => {
     if (!filePathUserMaster.err && !filePathPresence.err) {
       const csvHandler = new CSVHandler(filePathPresence.data);
       const presenceData = await csvHandler.readAllRecords();
-      if (presenceData.err) return presenceData;
+      if (presenceData.err) return wrapper.error('data not found');;
 
       const newAttendanceData = [];
       let sequenceNumber = 1;

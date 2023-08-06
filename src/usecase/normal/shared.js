@@ -3,9 +3,11 @@ const fileUtils = require('../../lib/utils/file');
 const wrapper = require('../../lib/utils/wrapper');
 const CSVHandler = require('../../lib/csv');
 
-const checkBaseFoldeExists = async (groupName) => {
+const checkBaseFoldeExists = async (groupName, additionalPath = '') => {
   try {
-    const baseFolder = `./data/${groupName}`;
+    let baseFolder = `./data/${groupName}`;
+    if(additionalPath.length) baseFolder = baseFolder + '/' + additionalPath;
+
     const checkBaseFolderExists = await fileUtils.checkFileExists(baseFolder);
     if (!checkBaseFolderExists) {
       await fileUtils.createDirectory(baseFolder);
@@ -69,25 +71,27 @@ const getFilePathPresence = async (groupInfo) => {
 
     let validations = [];
 
+    const date = moment().format('DD-MM-YYYY');
+
     validations.push(currentDate.day() === 5);
     if (currentDate >= startDate1 && currentDate <= endDate1 && validations.includes(true)) {
-      filePath = `./data/${groupName}/mk1.${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
+      filePath = `./data/${groupName}/${date}/mk1.${groupId}-attendancerecord.csv`;
     }
 
     validations = [];
     validations.push(currentDate.day() === 6, currentDate.day() === 0);
     if (currentDate >= startDate2 && currentDate <= endDate2 && validations.includes(true)) {
-      filePath = `./data/${groupName}/mk2.${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
+      filePath = `./data/${groupName}/${date}/mk2.${groupId}-attendancerecord.csv`;
     } else if (currentDate >= startDate3 && currentDate <= endDate3 && validations.includes(true)) {
-      filePath = `./data/${groupName}/mk3.${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
+      filePath = `./data/${groupName}/${date}/mk3.${groupId}-attendancerecord.csv`;
     } else if (currentDate >= startDate4 && currentDate <= endDate4 && validations.includes(true)) {
-      filePath = `./data/${groupName}/mk4.${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
+      filePath = `./data/${groupName}/${date}/mk4.${groupId}-attendancerecord.csv`;
     } else {
-      filePath = `./data/${groupName}/mkn-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
+      filePath = `./data/${groupName}/${date}/mkn-${groupId}-attendancerecord.csv`;
       return wrapper.data(filePath);
     }
 
-    await checkBaseFoldeExists(groupName);
+    await checkBaseFoldeExists(groupName, date);
 
     const checkFileExists = await fileUtils.checkFileExists(filePath);
     if (!checkFileExists) {

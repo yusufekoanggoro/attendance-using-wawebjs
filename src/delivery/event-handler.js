@@ -33,24 +33,31 @@ const onMessage = async (client, normalMode) => {
 
           if (msgBody.startsWith('.daftar ')) {
             logger.info(`Processing: ${msgBody}`);
-            const res = await usecase.createUser({ msg, groupInfo, userInfo });
-            if (!res.err) {
-              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-              await msg.reply(res.data);
+
+            let ucRes;
+            if (normalMode) {
+              ucRes = await usecase.createUser({ msg, groupInfo, userInfo });
             } else {
-              if (res.err === 'gagal daftar, format pesan salah') {
+              ucRes = await ucAbnormal.createUser({ msg, groupInfo, userInfo });
+            }
+
+            if (!ucRes.err) {
+              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+              await msg.reply(ucRes.data);
+            } else {
+              if (ucRes.err === 'gagal daftar, format pesan salah') {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(res.err);
+                await msg.reply(ucRes.err);
               }
-              if(res.err === 'gagal daftar, npm sudah terdaftar'){
+              if(ucRes.err === 'gagal daftar, npm sudah terdaftar'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(res.err);
+                await msg.reply(ucRes.err);
               }
-              if(res.err === 'gagal daftar, pengguna sudah terdaftar'){
+              if(ucRes.err === 'gagal daftar, pengguna sudah terdaftar'){
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(res.err);
+                await msg.reply(ucRes.err);
               }
-              logger.error(res.err);
+              logger.error(ucRes.err);
             }
             logger.info(`Processed: ${msgBody}`);
           }
@@ -152,6 +159,10 @@ const onMessage = async (client, normalMode) => {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(ucRes.err);
               }
+              if (ucRes.err === 'data not found') {
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply('data tidak ditemukan');
+              }
               logger.error(ucRes.err);
             }
             logger.info(`Processed: ${msgBody}`);
@@ -210,20 +221,31 @@ const onMessageCreate = async (client) => {
   
             if (msgBody.startsWith('.daftar ')) {
               logger.info(`Processing: ${msgBody}`);
-              const res = await usecase.createUser({ msg, groupInfo, userInfo });
-              if (!res.err) {
-                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(res.data);
+  
+              let ucRes;
+              if (normalMode) {
+                ucRes = await usecase.createUser({ msg, groupInfo, userInfo });
               } else {
-                if (res.err === 'pengguna atau npm sudah terdaftar') {
+                ucRes = await ucAbnormal.createUser({ msg, groupInfo, userInfo });
+              }
+  
+              if (!ucRes.err) {
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(ucRes.data);
+              } else {
+                if (ucRes.err === 'gagal daftar, format pesan salah') {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await msg.reply(constants.REPLY_USER_REGISTERED);
+                  await msg.reply(ucRes.err);
                 }
-                if (res.err === 'Format pesan salah') {
+                if(ucRes.err === 'gagal daftar, npm sudah terdaftar'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await msg.reply(res.err);
+                  await msg.reply(ucRes.err);
                 }
-                logger.error(res.err);
+                if(ucRes.err === 'gagal daftar, pengguna sudah terdaftar'){
+                  await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                  await msg.reply(ucRes.err);
+                }
+                logger.error(ucRes.err);
               }
               logger.info(`Processed: ${msgBody}`);
             }
@@ -244,9 +266,9 @@ const onMessageCreate = async (client) => {
               } else {
                 if (ucRes.err === 'waktu telah berakhir') {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                  await msg.reply(ucRes.err);
+                  await msg.reply(`gagal presensi, ${ucRes.err}`);
                 }
-                if (ucRes.err === 'pengguna belum terdaftar') {
+                if (ucRes.err === 'gagal presensi, pengguna belum terdaftar') {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(constants.REPLY_USER_NOT_REGISTERED);
                 }
@@ -325,6 +347,10 @@ const onMessageCreate = async (client) => {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(ucRes.err);
                 }
+                if (ucRes.err === 'data not found') {
+                  await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                  await msg.reply('data tidak ditemukan');
+                }
                 logger.error(ucRes.err);
               }
               logger.info(`Processed: ${msgBody}`);
@@ -344,9 +370,9 @@ const onMessageCreate = async (client) => {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(ucRes.data);
               } else {
-                if (ucRes.err === 'pengguna belum terdaftar'
-                 || ucRes.err === 'npm sudah terdaftar'
-                 || ucRes.err === 'Format pesan salah') {
+                if (ucRes.err === 'gagal edit, pengguna belum terdaftar'
+                 || ucRes.err === 'gagal edit, npm sudah terdaftar'
+                 || ucRes.err === 'gagal edit, format pesan salah') {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(ucRes.err);
                 }

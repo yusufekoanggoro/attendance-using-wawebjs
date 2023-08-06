@@ -3,10 +3,11 @@ const fileUtils = require('../../lib/utils/file');
 const wrapper = require('../../lib/utils/wrapper');
 const CSVHandler = require('../../lib/csv');
 
-const checkBaseFoldeExists = async (groupName) => {
+const checkBaseFoldeExists = async (groupName, additionalPath = '') => {
   try {
-    const date = moment().format('DD-MM-YYYY');
-    const baseFolder = `./data/${groupName}/${date}`;
+    let baseFolder = `./data/${groupName}`;
+    if(additionalPath.length) baseFolder = baseFolder + '/' + additionalPath;
+
     const checkBaseFolderExists = await fileUtils.checkFileExists(baseFolder);
     if (!checkBaseFolderExists) {
       await fileUtils.createDirectory(baseFolder);
@@ -27,7 +28,7 @@ const getFilePathPresence = async (groupInfo) => {
     const date = moment().format('DD-MM-YYYY');
     const filePath = `./data/${groupName}/${date}/mkn-${groupId}-attendancerecord.csv`;
 
-    await checkBaseFoldeExists(groupName);
+    await checkBaseFoldeExists(groupName, date);
 
     const checkFileExists = await fileUtils.checkFileExists(filePath);
     if (!checkFileExists) {
