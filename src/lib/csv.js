@@ -64,13 +64,19 @@ class CSVHandler {
     }
   }
 
-  updateRecordByWaNumber(recordToUpdate, waNumber) {
-    const recordIndex = this.csvData.findIndex((record) => record.wa_number === waNumber);
+  async updateRecordByWaNumber(recordToUpdate) {
+    if(!this.csvData.length){
+      const readData = await this.readData();
+      if (readData.err) return readData;
+    }
+    const wa_number = recordToUpdate.wa_number;
+    
+    const recordIndex = this.csvData.findIndex((record) => record.wa_number === wa_number);
     if (recordIndex !== -1) {
       Object.assign(this.csvData[recordIndex], recordToUpdate);
-      logger.info('Record updated successfully!');
+      return wrapper.data(this.csvData);
     } else {
-      logger.error('Record not found!');
+      return wrapper.error('data tidak ditemukan');
     }
   }
 

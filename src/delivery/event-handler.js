@@ -41,6 +41,10 @@ const onMessage = async (client, normalMode) => {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(constants.REPLY_USER_REGISTERED);
               }
+              if(res.err === 'Format pesan salah'){
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(res.err);
+              }
               logger.error(res.err);
             }
             logger.info(`Processed: ${msgBody}`);
@@ -148,6 +152,31 @@ const onMessage = async (client, normalMode) => {
             logger.info(`Processed: ${msgBody}`);
           }
 
+          if (msgBody.startsWith('.edit ')) {
+            logger.info(`Processing: ${msgBody}`);
+
+            let ucRes;
+            if(normalMode){
+              ucRes = await usecase.updateUser({ msg, groupInfo, userInfo });
+            }else{
+              ucRes = await ucSuddenPresence.updateUser({ msg, groupInfo, userInfo });
+            }
+
+            if (!ucRes.err) {
+              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+              await msg.reply(ucRes.data);
+            } else {
+              if(ucRes.err === 'pengguna belum terdaftar'
+               || ucRes.err === 'npm sudah terdaftar'
+               || ucRes.err === 'Format pesan salah'){
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(ucRes.err);
+              }
+              logger.error(ucRes.err);
+            }
+            logger.info(`Processed: ${msgBody}`);
+          }
+
         }
       }
     } catch (error) {
@@ -185,6 +214,10 @@ const onMessageCreate = async (client) => {
                 if(res.err === 'pengguna atau npm sudah terdaftar'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(constants.REPLY_USER_REGISTERED);
+                }
+                if(res.err === 'Format pesan salah'){
+                  await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                  await msg.reply(res.err);
                 }
                 logger.error(res.err);
               }
@@ -285,6 +318,31 @@ const onMessageCreate = async (client) => {
                 await msg.reply(ucRes.data);
               } else {
                 if(ucRes.err === 'waktu telah berakhir'){
+                  await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                  await msg.reply(ucRes.err);
+                }
+                logger.error(ucRes.err);
+              }
+              logger.info(`Processed: ${msgBody}`);
+            }
+  
+            if (msgBody.startsWith('.edit ')) {
+              logger.info(`Processing: ${msgBody}`);
+  
+              let ucRes;
+              if(normalMode){
+                ucRes = await usecase.updateUser({ msg, groupInfo, userInfo });
+              }else{
+                ucRes = await ucSuddenPresence.updateUser({ msg, groupInfo, userInfo });
+              }
+  
+              if (!ucRes.err) {
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(ucRes.data);
+              } else {
+                if(ucRes.err === 'pengguna belum terdaftar'
+                 || ucRes.err === 'npm sudah terdaftar'
+                 || ucRes.err === 'Format pesan salah'){
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(ucRes.err);
                 }
