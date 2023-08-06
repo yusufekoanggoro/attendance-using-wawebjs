@@ -48,11 +48,12 @@ Available Commands:
 3️⃣ Ketik ".presensi"
 4️⃣ Ketik ".peserta"
 5️⃣ Ketik ".kehadiran"
+5️⃣ Ketik ".edit npm nama"
     
 Feel free to explore and interact with the bot 🤗`;
 
 const REPLY_USER_NOT_REGISTERED = `kamu belum terdaftar
-silahlan ketik .daftar npm nama
+silahkan ketik .daftar npm nama
 lalu .presensi`;
 
 const REPLY_USER_REGISTERED = `pengguna atau npm sudah terdaftar
@@ -62,5 +63,5 @@ module.exports = {
   LogLevelColor,
   HELP_MESSAGE,
   REPLY_USER_NOT_REGISTERED,
-  REPLY_USER_REGISTERED
+  REPLY_USER_REGISTERED,
 };

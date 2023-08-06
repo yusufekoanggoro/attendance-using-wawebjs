@@ -1,8 +1,20 @@
 const moment = require('moment');
-const wrapper = require('../lib/utils/wrapper');
-const CSVHandler = require('../lib/csv');
-const fileUtils = require('../lib/utils/file');
-const logger = require('../lib/logger');
+const fileUtils = require('../../lib/utils/file');
+const wrapper = require('../../lib/utils/wrapper');
+const CSVHandler = require('../../lib/csv');
+
+const checkBaseFoldeExists = async (groupName) => {
+  try {
+    const baseFolder = `./data/${groupName}`;
+    const checkBaseFolderExists = await fileUtils.checkFileExists(baseFolder);
+    if (!checkBaseFolderExists) {
+      await fileUtils.createDirectory(baseFolder);
+    }
+    return wrapper.data(baseFolder);
+  } catch (error) {
+    return wrapper.error(error);
+  }
+};
 
 const getFilePathPresence = async (groupInfo) => {
   try {
@@ -57,25 +69,25 @@ const getFilePathPresence = async (groupInfo) => {
 
     let validations = [];
 
-    validations.push(currentDate.day() === 5)
+    validations.push(currentDate.day() === 5);
     if (currentDate >= startDate1 && currentDate <= endDate1 && validations.includes(true)) {
-      filePath = `./data/mk1.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-    } 
-    
-    validations = [];
-    validations.push(currentDate.day() === 6, currentDate.day() === 0)
-    if (currentDate >= startDate2 && currentDate <= endDate2 && validations.includes(true)) {
-      filePath = `./data/mk2.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-    } else if (currentDate >= startDate3 && currentDate <= endDate3 && validations.includes(true)) {
-      filePath = `./data/mk3.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-    } else if (currentDate >= startDate4 && currentDate <= endDate4 && validations.includes(true)) {
-      filePath = `./data/mk4.${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-    } else {
-      filePath = `./data/mkn-${groupName}-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
-      return wrapper.error("waktu telah berakhir");
+      filePath = `./data/${groupName}/mk1.${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
     }
 
-    await checkBaseFoldeExists();
+    validations = [];
+    validations.push(currentDate.day() === 6, currentDate.day() === 0);
+    if (currentDate >= startDate2 && currentDate <= endDate2 && validations.includes(true)) {
+      filePath = `./data/${groupName}/mk2.${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
+    } else if (currentDate >= startDate3 && currentDate <= endDate3 && validations.includes(true)) {
+      filePath = `./data/${groupName}/mk3.${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
+    } else if (currentDate >= startDate4 && currentDate <= endDate4 && validations.includes(true)) {
+      filePath = `./data/${groupName}/mk4.${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
+    } else {
+      filePath = `./data/${groupName}/mkn-${groupId}-attendancerecord-${moment().format('DD.MM.YYYY')}.csv`;
+      return wrapper.error('waktu telah berakhir');
+    }
+
+    await checkBaseFoldeExists(groupName);
 
     const checkFileExists = await fileUtils.checkFileExists(filePath);
     if (!checkFileExists) {
@@ -94,12 +106,12 @@ const getFilePathUserMaster = async (groupInfo) => {
       id: groupId,
       name: groupName,
     } = groupInfo;
-    
-    await checkBaseFoldeExists();
 
-    const filePathUserMaster = `./data/${groupId}-${groupName}-users.csv`;
+    await checkBaseFoldeExists(groupName);
+
+    const filePathUserMaster = `./data/${groupName}/${groupId}-users.csv`;
     const checkFileExists = await fileUtils.checkFileExists(filePathUserMaster);
-    if(!checkFileExists) await fileUtils.createFile(filePathUserMaster, 'wa_number,npm,full_name\n');
+    if (!checkFileExists) await fileUtils.createFile(filePathUserMaster, 'wa_number,npm,full_name\n');
 
     return wrapper.data(filePathUserMaster);
   } catch (error) {
@@ -127,12 +139,12 @@ ${groupName}
 
     let validations = [];
 
-    validations.push(currentDate.day() === 5)
+    validations.push(currentDate.day() === 5);
     if (
-      currentDate >= startDate1 
+      currentDate >= startDate1
       && currentDate <= endDate1
       && validations.includes(true)
-      ) {
+    ) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
 (Pukul ${startDate1.format('HH:mm')} - ${endDate1.format('HH:mm')})`;
@@ -204,11 +216,11 @@ ${groupName}
 const getPresence = async (groupInfo) => {
   try {
     const filePathPresence = await getFilePathPresence(groupInfo);
-    if(filePathPresence.err) return filePathPresence;
+    if (filePathPresence.err) return filePathPresence;
 
     const csvHandler = new CSVHandler(filePathPresence.data);
     const presenceData = await csvHandler.readAllRecords();
-    if(presenceData.err) return presenceData;
+    if (presenceData.err) return presenceData;
 
     const newAttendanceData = [];
     let sequenceNumber = 1;
@@ -218,7 +230,7 @@ const getPresence = async (groupInfo) => {
     });
 
     const headerMessage = await getHeaderMessage(groupInfo.name);
-    if(headerMessage.err) return headerMessage;
+    if (headerMessage.err) return headerMessage;
 
     let finalString = `${headerMessage.data}\n\n`;
     newAttendanceData.forEach((v) => {
@@ -231,64 +243,10 @@ const getPresence = async (groupInfo) => {
   }
 };
 
-const checkBaseFoldeExists = async () => {
-  try {
-    const baseFolder = './data';
-    const checkBaseFolderExists = await fileUtils.checkFileExists(baseFolder);
-    if (!checkBaseFolderExists) {
-      await fileUtils.createDirectory(baseFolder);
-    }
-    return baseFolder;
-  } catch (error) {
-    return false;
-  }
+module.exports = {
+  checkBaseFoldeExists,
+  getFilePathPresence,
+  getFilePathUserMaster,
+  getHeaderMessage,
+  getPresence,
 };
-
-const createPresence = async (payload) => {
-  try {
-    const {
-      id: userId,
-    } = payload.userInfo;
-
-    const filePathUserMaster = await getFilePathUserMaster(payload.groupInfo);
-    const filePathPresence = await getFilePathPresence(payload.groupInfo);
-    if(filePathPresence.err) return filePathPresence;
-
-    if(!filePathUserMaster.err && !filePathPresence.err){
-      const csvUserMaster = new CSVHandler(filePathUserMaster.data);
-
-      const findUser = await csvUserMaster.findByField('wa_number', userId);
-      if(findUser.err) return wrapper.error('pengguna belum terdaftar');
-      
-      const npm = findUser.data[0].npm;
-      const fullName = findUser.data[0].full_name;
-
-      const csvPresence = new CSVHandler(filePathPresence.data);
-
-      const findUserByNpm = await csvPresence.findByField('npm', npm);
-      if(findUserByNpm.err) {
-        const newRecord = {
-          wa_number: userId,
-          npm,
-          full_name: fullName,
-        };
-          
-        csvPresence.createRecord(newRecord);
-  
-        const writeData = await csvPresence.writeData();
-        if (writeData.err) return writeData;
-      }
-
-      logger.info(`.presensi ${npm} ${fullName}`);
-
-      const presenceData = await getPresence(payload.groupInfo);
-      return presenceData;
-    }
-
-    return wrapper.error('file not found');
-  } catch (error) {
-    return wrapper.error(error);
-  }
-};
-
-module.exports = createPresence;

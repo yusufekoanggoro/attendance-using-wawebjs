@@ -1,16 +1,17 @@
-const usecase = require('../usecase');
+const usecase = require('../usecase/normal');
 const timeUtils = require('../lib/utils/time');
 const logger = require('../lib/logger');
 const constants = require('../lib/utils/constants');
 const config = require('../../config');
+
 const minSleepmsHandleBlasting = config.get('/minSleepmsHandleBlasting')
   ? config.get('/minSleepmsHandleBlasting')
-  : 500; 
+  : 500;
 const maxSleepmsHandleBlasting = config.get('/maxSleepmsHandleBlasting')
   ? config.get('/maxSleepmsHandleBlasting')
   : 1500;
 
-const ucSuddenPresence = require('../usecase/sudden-presence'); 
+const ucAbnormal = require('../usecase/abnormal');
 
 const onMessage = async (client, normalMode) => {
   client.on('message', async (msg) => {
@@ -37,11 +38,11 @@ const onMessage = async (client, normalMode) => {
               await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(res.data);
             } else {
-              if(res.err === 'pengguna atau npm sudah terdaftar'){
+              if (res.err === 'pengguna atau npm sudah terdaftar') {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(constants.REPLY_USER_REGISTERED);
               }
-              if(res.err === 'Format pesan salah'){
+              if (res.err === 'Format pesan salah') {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(res.err);
               }
@@ -54,21 +55,21 @@ const onMessage = async (client, normalMode) => {
             logger.info(`Processing: ${msgBody}`);
 
             let ucRes;
-            if(normalMode){
+            if (normalMode) {
               ucRes = await usecase.createPresence({ groupInfo, userInfo });
-            }else{
-              ucRes = await ucSuddenPresence.createPresence({ groupInfo, userInfo });
+            } else {
+              ucRes = await ucAbnormal.createPresence({ groupInfo, userInfo });
             }
 
             if (!ucRes.err) {
               await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(ucRes.data);
             } else {
-              if(ucRes.err === 'waktu telah berakhir'){
+              if (ucRes.err === 'waktu telah berakhir') {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(ucRes.err);
               }
-              if(ucRes.err === 'pengguna belum terdaftar'){
+              if (ucRes.err === 'pengguna belum terdaftar') {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(constants.REPLY_USER_NOT_REGISTERED);
               }
@@ -98,12 +99,12 @@ const onMessage = async (client, normalMode) => {
             logger.info(`Processing: ${msgBody}`);
 
             let ucRes;
-            if(normalMode){
+            if (normalMode) {
               ucRes = await usecase.sendReminder({
                 groupInfo, userInfo, client, chat,
               });
-            }else{
-              ucRes = await ucSuddenPresence.sendReminder({
+            } else {
+              ucRes = await ucAbnormal.sendReminder({
                 groupInfo, userInfo, client, chat,
               });
             }
@@ -120,7 +121,7 @@ const onMessage = async (client, normalMode) => {
                 await msg.reply('semua mahasiwa yang terdaftar sudah melakukan presensi');
               }
             } else {
-              if(ucRes.err === 'waktu telah berakhir'){
+              if (ucRes.err === 'waktu telah berakhir') {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(ucRes.err);
               }
@@ -133,17 +134,17 @@ const onMessage = async (client, normalMode) => {
             logger.info(`Processing: ${msgBody}`);
 
             let ucRes;
-            if(normalMode){
+            if (normalMode) {
               ucRes = await usecase.getPresence(groupInfo);
-            }else{
-              ucRes = await ucSuddenPresence.getPresence(groupInfo);
+            } else {
+              ucRes = await ucAbnormal.getPresence(groupInfo);
             }
 
             if (!ucRes.err) {
               await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(ucRes.data);
             } else {
-              if(ucRes.err === 'waktu telah berakhir'){
+              if (ucRes.err === 'waktu telah berakhir') {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(ucRes.err);
               }
@@ -156,19 +157,19 @@ const onMessage = async (client, normalMode) => {
             logger.info(`Processing: ${msgBody}`);
 
             let ucRes;
-            if(normalMode){
+            if (normalMode) {
               ucRes = await usecase.updateUser({ msg, groupInfo, userInfo });
-            }else{
-              ucRes = await ucSuddenPresence.updateUser({ msg, groupInfo, userInfo });
+            } else {
+              ucRes = await ucAbnormal.updateUser({ msg, groupInfo, userInfo });
             }
 
             if (!ucRes.err) {
               await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
               await msg.reply(ucRes.data);
             } else {
-              if(ucRes.err === 'pengguna belum terdaftar'
+              if (ucRes.err === 'pengguna belum terdaftar'
                || ucRes.err === 'npm sudah terdaftar'
-               || ucRes.err === 'Format pesan salah'){
+               || ucRes.err === 'Format pesan salah') {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(ucRes.err);
               }
@@ -176,7 +177,6 @@ const onMessage = async (client, normalMode) => {
             }
             logger.info(`Processed: ${msgBody}`);
           }
-
         }
       }
     } catch (error) {
@@ -211,11 +211,11 @@ const onMessageCreate = async (client) => {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(res.data);
               } else {
-                if(res.err === 'pengguna atau npm sudah terdaftar'){
+                if (res.err === 'pengguna atau npm sudah terdaftar') {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(constants.REPLY_USER_REGISTERED);
                 }
-                if(res.err === 'Format pesan salah'){
+                if (res.err === 'Format pesan salah') {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(res.err);
                 }
@@ -228,21 +228,21 @@ const onMessageCreate = async (client) => {
               logger.info(`Processing: ${msgBody}`);
   
               let ucRes;
-              if(normalMode){
+              if (normalMode) {
                 ucRes = await usecase.createPresence({ groupInfo, userInfo });
-              }else{
-                ucRes = await ucSuddenPresence.createPresence({ groupInfo, userInfo });
+              } else {
+                ucRes = await ucAbnormal.createPresence({ groupInfo, userInfo });
               }
   
               if (!ucRes.err) {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(ucRes.data);
               } else {
-                if(ucRes.err === 'waktu telah berakhir'){
+                if (ucRes.err === 'waktu telah berakhir') {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(ucRes.err);
                 }
-                if(ucRes.err === 'pengguna belum terdaftar'){
+                if (ucRes.err === 'pengguna belum terdaftar') {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(constants.REPLY_USER_NOT_REGISTERED);
                 }
@@ -272,12 +272,12 @@ const onMessageCreate = async (client) => {
               logger.info(`Processing: ${msgBody}`);
   
               let ucRes;
-              if(normalMode){
+              if (normalMode) {
                 ucRes = await usecase.sendReminder({
                   groupInfo, userInfo, client, chat,
                 });
-              }else{
-                ucRes = await ucSuddenPresence.sendReminder({
+              } else {
+                ucRes = await ucAbnormal.sendReminder({
                   groupInfo, userInfo, client, chat,
                 });
               }
@@ -294,7 +294,7 @@ const onMessageCreate = async (client) => {
                   await msg.reply('semua mahasiwa yang terdaftar sudah melakukan presensi');
                 }
               } else {
-                if(ucRes.err === 'waktu telah berakhir'){
+                if (ucRes.err === 'waktu telah berakhir') {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(ucRes.err);
                 }
@@ -307,17 +307,17 @@ const onMessageCreate = async (client) => {
               logger.info(`Processing: ${msgBody}`);
   
               let ucRes;
-              if(normalMode){
+              if (normalMode) {
                 ucRes = await usecase.getPresence(groupInfo);
-              }else{
-                ucRes = await ucSuddenPresence.getPresence(groupInfo);
+              } else {
+                ucRes = await ucAbnormal.getPresence(groupInfo);
               }
   
               if (!ucRes.err) {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(ucRes.data);
               } else {
-                if(ucRes.err === 'waktu telah berakhir'){
+                if (ucRes.err === 'waktu telah berakhir') {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(ucRes.err);
                 }
@@ -330,19 +330,19 @@ const onMessageCreate = async (client) => {
               logger.info(`Processing: ${msgBody}`);
   
               let ucRes;
-              if(normalMode){
+              if (normalMode) {
                 ucRes = await usecase.updateUser({ msg, groupInfo, userInfo });
-              }else{
-                ucRes = await ucSuddenPresence.updateUser({ msg, groupInfo, userInfo });
+              } else {
+                ucRes = await ucAbnormal.updateUser({ msg, groupInfo, userInfo });
               }
   
               if (!ucRes.err) {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(ucRes.data);
               } else {
-                if(ucRes.err === 'pengguna belum terdaftar'
+                if (ucRes.err === 'pengguna belum terdaftar'
                  || ucRes.err === 'npm sudah terdaftar'
-                 || ucRes.err === 'Format pesan salah'){
+                 || ucRes.err === 'Format pesan salah') {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(ucRes.err);
                 }
@@ -350,7 +350,6 @@ const onMessageCreate = async (client) => {
               }
               logger.info(`Processed: ${msgBody}`);
             }
-  
           }
         }
       }

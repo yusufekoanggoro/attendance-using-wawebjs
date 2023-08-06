@@ -2,23 +2,21 @@ const whatsappWebClient = require('./lib/whatsapp-web-client');
 const eventHandler = require('./delivery/event-handler');
 const logger = require('./lib/logger');
 
-const askQuestion = async (question) => {
-  return new Promise((resolve) => {
-    const readline = require('readline').createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-
-    readline.question(question, (input) => {
-      readline.close();
-      resolve(input.trim());
-    });
+const askQuestion = async (question) => new Promise((resolve) => {
+  const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
   });
-}
+
+  readline.question(question, (input) => {
+    readline.close();
+    resolve(input.trim());
+  });
+});
 
 (async () => {
   try {
-    let userInput = await askQuestion('Menggunakan mode normal (y/t): ');
+    const userInput = await askQuestion('apakah ingin menggunakan mode normal? (y/t): ');
 
     let normalMode = false;
 

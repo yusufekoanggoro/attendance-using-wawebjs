@@ -58,6 +58,8 @@ class CSVHandler {
       const data = await this.readData();
       if (data.err) return data;
 
+      if (!this.csvData.length) return wrapper.error('data not found');
+
       return wrapper.data(this.csvData);
     } catch (error) {
       return wrapper.error(error.message);
@@ -65,19 +67,18 @@ class CSVHandler {
   }
 
   async updateRecordByWaNumber(recordToUpdate) {
-    if(!this.csvData.length){
+    if (!this.csvData.length) {
       const readData = await this.readData();
       if (readData.err) return readData;
     }
-    const wa_number = recordToUpdate.wa_number;
-    
+    const { wa_number } = recordToUpdate;
+
     const recordIndex = this.csvData.findIndex((record) => record.wa_number === wa_number);
     if (recordIndex !== -1) {
       Object.assign(this.csvData[recordIndex], recordToUpdate);
       return wrapper.data(this.csvData);
-    } else {
-      return wrapper.error('data tidak ditemukan');
     }
+    return wrapper.error('data tidak ditemukan');
   }
 
   deleteRecord(recordToDelete) {
@@ -90,16 +91,16 @@ class CSVHandler {
     }
   }
 
-  async findByField(fieldName, fieldValue) {
+  async findOneByField(fieldName, fieldValue) {
     try {
-      if(!this.csvData.length){
+      if (!this.csvData.length) {
         const readData = await this.readData();
         if (readData.err) return readData;
       }
 
       const foundRecords = this.csvData.filter((record) => record[fieldName] === fieldValue);
       if (!foundRecords.length) return wrapper.error(`${fieldName} not found`);
-      return wrapper.data(foundRecords);
+      return wrapper.data(foundRecords[0]);
     } catch (error) {
       return wrapper.error(error);
     }

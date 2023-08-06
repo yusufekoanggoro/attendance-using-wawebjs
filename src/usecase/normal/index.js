@@ -11,5 +11,5 @@ module.exports = {
   getParticipants,
   sendReminder,
   getPresence,
-  updateUser
+  updateUser,
 };

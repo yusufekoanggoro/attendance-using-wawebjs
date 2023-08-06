@@ -1,40 +1,8 @@
 const wrapper = require('../../lib/utils/wrapper');
 const CSVHandler = require('../../lib/csv');
-const fileUtils = require('../../lib/utils/file');
 const stringUtils = require('../../lib/utils/string');
 const arrayUtils = require('../../lib/utils/array');
-
-const checkBaseFoldeExists = async () => {
-  try {
-    const baseFolder = './data';
-    const checkBaseFolderExists = await fileUtils.checkFileExists(baseFolder);
-    if (!checkBaseFolderExists) {
-      await fileUtils.createDirectory(baseFolder);
-    }
-    return baseFolder;
-  } catch (error) {
-    return false;
-  }
-};
-
-const getFilePathUserMaster = async (groupInfo) => {
-  try {
-    const {
-      id: groupId,
-      name: groupName,
-    } = groupInfo;
-    
-    await checkBaseFoldeExists();
-
-    const filePathUserMaster = `./data/${groupId}-${groupName}-users.csv`;
-    const checkFileExists = await fileUtils.checkFileExists(filePathUserMaster);
-    if(!checkFileExists) await fileUtils.createFile(filePathUserMaster, 'wa_number,npm,full_name\n');
-
-    return filePathUserMaster;
-  } catch (error) {
-    return '';
-  }
-};
+const sharedUc = require('./shared');
 
 const createUser = async (payload) => {
   try {
@@ -67,28 +35,27 @@ const createUser = async (payload) => {
       );
 
       if (await arrayUtils.allAreTrue(conditions)) {
-        const filePathUserMaster = await getFilePathUserMaster(groupInfo);
-        if(filePathUserMaster){
-          const csvHandler = new CSVHandler(filePathUserMaster);
-  
-          const findUserByWaNumber = await csvHandler.findByField('wa_number', userId);
-          const findUserByNpm = await csvHandler.findByField('npm', npm);
+        const filePathUserMaster = await sharedUc.getFilePathUserMaster(groupInfo);
+        if (!filePathUserMaster.err) {
+          const csvHandler = new CSVHandler(filePathUserMaster.data);
+
+          const findUserByWaNumber = await csvHandler.findOneByField('wa_number', userId);
+          const findUserByNpm = await csvHandler.findOneByField('npm', npm);
           if (findUserByWaNumber.err && findUserByNpm.err) {
             const newRecord = {
               wa_number: userId,
               npm,
               full_name: fullName,
             };
-  
+
             csvHandler.createRecord(newRecord);
             const writeData = await csvHandler.writeData();
             if (writeData.err) return writeData;
-  
+
             return wrapper.data('berhasil daftar, silahkan ketik .presensi');
           }
-  
-          return wrapper.error('pengguna atau npm sudah terdaftar');
 
+          return wrapper.error('pengguna atau npm sudah terdaftar');
         }
 
         return wrapper.error('file not found');
