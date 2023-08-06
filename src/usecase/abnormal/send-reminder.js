@@ -29,10 +29,10 @@ const sendReminder = async (payload) => {
 
     const filePathUserMaster = await sharedUc.getFilePathUserMaster(payload.groupInfo);
     if (!filePathUserMaster.err) {
-      const presenceData = await getPresence(payload.groupInfo);
-      if (presenceData.err) return presenceData;
+      let usersPresent = [];
 
-      const usersPresent = presenceData.data;
+      const presenceData = await getPresence(payload.groupInfo);
+      if (!presenceData.err) usersPresent = presenceData.data;
 
       const mentions = [];
 
