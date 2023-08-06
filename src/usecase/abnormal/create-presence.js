@@ -21,6 +21,7 @@ const createPresence = async (payload) => {
 
       const { wa_number } = findUser.data;
       const fullName = findUser.data.full_name;
+      const npm = findUser.data.npm;
 
       const csvPresence = new CSVHandler(filePathPresence.data);
 

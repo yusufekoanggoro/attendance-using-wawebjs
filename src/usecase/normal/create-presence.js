@@ -11,7 +11,7 @@ const createPresence = async (payload) => {
 
     const isTimeOver = await sharedUc.checkTimeOver();
     if(isTimeOver.err) return isTimeOver;
-    
+
     const withCreateFolder = true;
     const filePathUserMaster = await sharedUc.getFilePathUserMaster(payload.groupInfo);
     const filePathPresence = await sharedUc.getFilePathPresence(payload.groupInfo, withCreateFolder);
@@ -24,6 +24,7 @@ const createPresence = async (payload) => {
 
       const { wa_number } = findUser.data;
       const fullName = findUser.data.full_name;
+      const npm = findUser.data.npm;
 
       const csvPresence = new CSVHandler(filePathPresence.data);
 
