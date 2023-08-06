@@ -8,6 +8,9 @@ const getPresence = async (groupInfo) => {
     const filePathUserMaster = await sharedUc.getFilePathUserMaster(groupInfo);
     const filePathPresence = await sharedUc.getFilePathPresence(groupInfo);
 
+    const headerMessage = await sharedUc.getHeaderMessage(groupInfo.name);
+    if (headerMessage.err) return headerMessage;
+
     if (!filePathUserMaster.err && !filePathPresence.err) {
       const csvHandler = new CSVHandler(filePathPresence.data);
       const presenceData = await csvHandler.readAllRecords();
@@ -30,9 +33,6 @@ const getPresence = async (groupInfo) => {
         }
       }
 
-      const headerMessage = await sharedUc.getHeaderMessage(groupInfo.name);
-      if (headerMessage.err) return headerMessage;
-
       let finalString = `${headerMessage.data}\n\n`;
       newAttendanceData.forEach((v) => {
         finalString += v;
@@ -42,7 +42,9 @@ const getPresence = async (groupInfo) => {
       return wrapper.data(finalString);
     }
 
-    return wrapper.error('file not found');
+    let finalString = `${headerMessage.data}\n\n\nTotal: 0 Mahasiswa/i`;
+
+    return wrapper.data(finalString);
   } catch (error) {
     return wrapper.error(error);
   }

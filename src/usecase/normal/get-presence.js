@@ -9,7 +9,7 @@ const getPresence = async (groupInfo) => {
     if(isTimeOver.err) return isTimeOver;
 
     const filePathUserMaster = await sharedUc.getFilePathUserMaster(groupInfo);
-    const filePathPresence = await sharedUc.getFilePathPresence(groupInfo);
+    const filePathPresence = await sharedUc.getFilePathPresence(groupInfo, false);
 
     if (!filePathUserMaster.err && !filePathPresence.err) {
       const csvHandler = new CSVHandler(filePathPresence.data);

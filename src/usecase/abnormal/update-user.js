@@ -2,7 +2,6 @@ const wrapper = require('../../lib/utils/wrapper');
 const CSVHandler = require('../../lib/csv');
 const stringUtils = require('../../lib/utils/string');
 const arrayUtils = require('../../lib/utils/array');
-const logger = require('../../lib/logger');
 const sharedUc = require('./shared');
 
 const updateUser = async (payload) => {
@@ -37,8 +36,6 @@ const updateUser = async (payload) => {
 
       if (await arrayUtils.allAreTrue(conditions)) {
         const filePathUserMaster = await sharedUc.getFilePathUserMaster(groupInfo);
-        const filePathPresence = await sharedUc.getFilePathPresence(groupInfo);
-        if(filePathPresence.err) return filePathPresence;
 
         if (!filePathUserMaster.err) {
           const csvHandler = new CSVHandler(filePathUserMaster.data);

@@ -18,7 +18,7 @@ const checkBaseFoldeExists = async (groupName, additionalPath = '') => {
   }
 };
 
-const getFilePathPresence = async (groupInfo) => {
+const getFilePathPresence = async (groupInfo, withCreate = false) => {
   try {
     const {
       id: groupId,
@@ -28,11 +28,17 @@ const getFilePathPresence = async (groupInfo) => {
     const date = moment().format('DD-MM-YYYY');
     const filePath = `./data/${groupName}/${date}/mkn-${groupId}-attendancerecord.csv`;
 
-    await checkBaseFoldeExists(groupName, date);
+    if(withCreate){
+      await checkBaseFoldeExists(groupName, date);
+  
+      const checkFileExists = await fileUtils.checkFileExists(filePath);
+      if (!checkFileExists) {
+        await fileUtils.createFile(filePath, 'wa_number,npm,full_name\n');
+      }
+    }
 
-    const checkFileExists = await fileUtils.checkFileExists(filePath);
-    if (!checkFileExists) {
-      await fileUtils.createFile(filePath, 'wa_number,npm,full_name\n');
+    if(!await fileUtils.checkFileExists(filePath)){
+      return wrapper.error('file not found');
     }
 
     return wrapper.data(filePath);

@@ -91,12 +91,19 @@ const onMessage = async (client, normalMode) => {
 
           if (msgBody === '.peserta') {
             logger.info(`Processing: ${msgBody}`);
-            const res = await usecase.getParticipants({ groupInfo, userInfo });
-            if (!res.err) {
-              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-              await msg.reply(res.data);
+
+            let ucRes;
+            if (normalMode) {
+              ucRes = await usecase.getParticipants({ groupInfo, userInfo });
             } else {
-              logger.error(res.err);
+              ucRes = await ucAbnormal.getParticipants({ groupInfo, userInfo });
+            }
+
+            if (!ucRes.err) {
+              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+              await msg.reply(ucRes.data);
+            } else {
+              logger.error(ucRes.err);
             }
             logger.info(`Processed: ${msgBody}`);
           }
@@ -279,12 +286,19 @@ const onMessageCreate = async (client) => {
   
             if (msgBody === '.peserta') {
               logger.info(`Processing: ${msgBody}`);
-              const res = await usecase.getParticipants({ groupInfo, userInfo });
-              if (!res.err) {
-                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(res.data);
+  
+              let ucRes;
+              if (normalMode) {
+                ucRes = await usecase.getParticipants({ groupInfo, userInfo });
               } else {
-                logger.error(res.err);
+                ucRes = await ucAbnormal.getParticipants({ groupInfo, userInfo });
+              }
+  
+              if (!ucRes.err) {
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(ucRes.data);
+              } else {
+                logger.error(ucRes.err);
               }
               logger.info(`Processed: ${msgBody}`);
             }

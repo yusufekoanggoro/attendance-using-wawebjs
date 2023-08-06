@@ -19,7 +19,7 @@ const getParticipants = async (payload) => {
         sequenceNumber += 1;
       });
 
-      let finalString = 'Daftar Peserta\n';
+      let finalString = `Daftar Peserta\n\n`;
       newAttendanceData.forEach((v) => {
         finalString += v;
       });

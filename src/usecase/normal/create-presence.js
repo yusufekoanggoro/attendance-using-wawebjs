@@ -11,9 +11,10 @@ const createPresence = async (payload) => {
 
     const isTimeOver = await sharedUc.checkTimeOver();
     if(isTimeOver.err) return isTimeOver;
-
+    
+    const withCreateFolder = true;
     const filePathUserMaster = await sharedUc.getFilePathUserMaster(payload.groupInfo);
-    const filePathPresence = await sharedUc.getFilePathPresence(payload.groupInfo);
+    const filePathPresence = await sharedUc.getFilePathPresence(payload.groupInfo, withCreateFolder);
 
     if (!filePathUserMaster.err && !filePathPresence.err) {
       const csvUserMaster = new CSVHandler(filePathUserMaster.data);
@@ -21,13 +22,13 @@ const createPresence = async (payload) => {
       const findUser = await csvUserMaster.findOneByField('wa_number', userId);
       if (findUser.err) return wrapper.error('gagal presensi, pengguna belum terdaftar');
 
-      const { npm } = findUser.data;
+      const { wa_number } = findUser.data;
       const fullName = findUser.data.full_name;
 
       const csvPresence = new CSVHandler(filePathPresence.data);
 
-      const findUserByNpm = await csvPresence.findOneByField('npm', npm);
-      if (findUserByNpm.err) {
+      const findPresenceByWaNumber = await csvPresence.findOneByField('wa_number', wa_number);
+      if (findPresenceByWaNumber.err) {
         const newRecord = { wa_number: userId };
 
         csvPresence.createRecord(newRecord);
