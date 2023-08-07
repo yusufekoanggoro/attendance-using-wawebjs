@@ -136,7 +136,7 @@ const onMessage = async (client, normalMode) => {
                 });
               }
               if (!ucRes.data.mentions.length) {
-                await msg.reply('semua mahasiwa yang terdaftar sudah melakukan presensi');
+                await msg.reply('done!');
               }
             } else {
               if (ucRes.err === 'waktu telah berakhir') {
@@ -356,7 +356,7 @@ const onMessageCreate = async (client) => {
                   });
                 }
                 if (!ucRes.data.mentions.length) {
-                  await msg.reply('semua mahasiwa yang terdaftar sudah melakukan presensi');
+                  await msg.reply('done!');
                 }
               } else {
                 if (ucRes.err === 'waktu telah berakhir') {
