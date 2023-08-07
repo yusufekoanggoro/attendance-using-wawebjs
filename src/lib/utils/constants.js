@@ -49,6 +49,7 @@ Available Commands:
 4️⃣ Ketik ".peserta"
 5️⃣ Ketik ".kehadiran"
 5️⃣ Ketik ".edit npm nama"
+6️⃣ Ketik ".profile"
     
 Feel free to explore and interact with the bot 🤗`;
 

@@ -199,6 +199,27 @@ const onMessage = async (client, normalMode) => {
             }
             logger.info(`Processed: ${msgBody}`);
           }
+
+          if (msgBody === '.profile') {
+            logger.info(`Processing: ${msgBody}`);
+
+            let ucRes;
+            if (normalMode) {
+              ucRes = await usecase.getProfile({ groupInfo, userInfo });
+            } else {
+              ucRes = await ucAbnormal.getProfile({ groupInfo, userInfo });
+            }
+
+            if (!ucRes.err) {
+              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+              await msg.reply(ucRes.data);
+            } else {
+              await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+              await msg.reply(ucRes.err);
+              logger.error(ucRes.err);
+            }
+            logger.info(`Processed: ${msgBody}`);
+          }
         }
       }
     } catch (error) {
