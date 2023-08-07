@@ -232,7 +232,7 @@ const onMessage = async (client, normalMode) => {
   });
 };
 
-const onMessageCreate = async (client) => {
+const onMessageCreate = async (client, normalMode) => {
   client.on('message_create', async (msg) => {
     try {
       if (msg.fromMe) {
