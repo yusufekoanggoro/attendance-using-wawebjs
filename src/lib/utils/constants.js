@@ -48,7 +48,7 @@ Available Commands:
 3️⃣ Ketik ".presensi"
 4️⃣ Ketik ".peserta"
 5️⃣ Ketik ".kehadiran"
-5️⃣ Ketik ".edit npm nama"
+5️⃣ Ketik ".edit npm|nama value"
 6️⃣ Ketik ".profile"
     
 Feel free to explore and interact with the bot 🤗`;
@@ -60,9 +60,15 @@ lalu .presensi`;
 const REPLY_USER_REGISTERED = `pengguna atau npm sudah terdaftar
 silahkan ketik .presensi`;
 
+const REPLY_WRONG_FORMAT_EDIT = `format pesan salah.
+contoh:
+ubah npm: .edit npm 2020xxx
+ubah nama: .edit nama Udin`;
+
 module.exports = {
   LogLevelColor,
   HELP_MESSAGE,
   REPLY_USER_NOT_REGISTERED,
   REPLY_USER_REGISTERED,
+  REPLY_WRONG_FORMAT_EDIT
 };

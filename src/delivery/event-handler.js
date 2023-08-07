@@ -191,9 +191,13 @@ const onMessage = async (client, normalMode) => {
             } else {
               if (ucRes.err === 'gagal edit, pengguna belum terdaftar'
                || ucRes.err === 'gagal edit, npm sudah terdaftar'
-               || ucRes.err === 'gagal edit, format pesan salah') {
+               ) {
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(ucRes.err);
+              }
+              if(ucRes.err === 'gagal edit, format pesan salah'){
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(constants.REPLY_WRONG_FORMAT_EDIT);
               }
               logger.error(ucRes.err);
             }
