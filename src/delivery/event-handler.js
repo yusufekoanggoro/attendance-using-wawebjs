@@ -411,10 +411,35 @@ const onMessageCreate = async (client) => {
               } else {
                 if (ucRes.err === 'gagal edit, pengguna belum terdaftar'
                  || ucRes.err === 'gagal edit, npm sudah terdaftar'
-                 || ucRes.err === 'gagal edit, format pesan salah') {
+                 ) {
                   await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                   await msg.reply(ucRes.err);
                 }
+                if(ucRes.err === 'gagal edit, format pesan salah'){
+                  await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                  await msg.reply(constants.REPLY_WRONG_FORMAT_EDIT);
+                }
+                logger.error(ucRes.err);
+              }
+              logger.info(`Processed: ${msgBody}`);
+            }
+  
+            if (msgBody === '.profile') {
+              logger.info(`Processing: ${msgBody}`);
+  
+              let ucRes;
+              if (normalMode) {
+                ucRes = await usecase.getProfile({ groupInfo, userInfo });
+              } else {
+                ucRes = await ucAbnormal.getProfile({ groupInfo, userInfo });
+              }
+  
+              if (!ucRes.err) {
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(ucRes.data);
+              } else {
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(ucRes.err);
                 logger.error(ucRes.err);
               }
               logger.info(`Processed: ${msgBody}`);
