@@ -8,13 +8,15 @@ const createPresence = async (payload) => {
     const {
       id: userId,
     } = payload.userInfo;
+    const classHours = payload.classHours;
 
-    const isTimeOver = await sharedUc.checkTimeOver();
+    const isTimeOver = await sharedUc.checkTimeOver(classHours);
     if(isTimeOver.err) return isTimeOver;
 
-    const withCreateFolder = true;
-    const filePathUserMaster = await sharedUc.getFilePathUserMaster(payload.groupInfo);
-    const filePathPresence = await sharedUc.getFilePathPresence(payload.groupInfo, withCreateFolder);
+    const groupInfo = payload.groupInfo;
+    const filePathUserMaster = await sharedUc.getFilePathUserMaster(groupInfo);
+    const withCreate = true;
+    const filePathPresence = await sharedUc.getFilePathPresence({ groupInfo, withCreate, classHours });
 
     if (!filePathUserMaster.err && !filePathPresence.err) {
       const csvUserMaster = new CSVHandler(filePathUserMaster.data);
@@ -40,7 +42,7 @@ const createPresence = async (payload) => {
 
       logger.info(`.presensi ${npm} ${fullName}`);
 
-      const presenceData = await sharedUc.getPresence(payload.groupInfo);
+      const presenceData = await sharedUc.getPresence(payload);
       return presenceData;
     }
 

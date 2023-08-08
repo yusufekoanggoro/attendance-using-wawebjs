@@ -13,7 +13,7 @@ const maxSleepmsHandleBlasting = config.get('/maxSleepmsHandleBlasting')
 
 const ucAbnormal = require('../usecase/abnormal');
 
-const onMessage = async (client, normalMode) => {
+const onMessage = async (client, normalMode, classHours) => {
   client.on('message', async (msg) => {
     try {
       const chat = await msg.getChat();
@@ -30,15 +30,16 @@ const onMessage = async (client, normalMode) => {
             name: '',
             npm: '',
           };
+          let payload = { msg, groupInfo, userInfo, classHours, client, chat };
 
           if (msgBody.startsWith('.daftar ')) {
             logger.info(`Processing: ${msgBody}`);
 
             let ucRes;
             if (normalMode) {
-              ucRes = await usecase.createUser({ msg, groupInfo, userInfo });
+              ucRes = await usecase.createUser(payload);
             } else {
-              ucRes = await ucAbnormal.createUser({ msg, groupInfo, userInfo });
+              ucRes = await ucAbnormal.createUser(payload);
             }
 
             if (!ucRes.err) {
@@ -67,9 +68,9 @@ const onMessage = async (client, normalMode) => {
 
             let ucRes;
             if (normalMode) {
-              ucRes = await usecase.createPresence({ groupInfo, userInfo });
+              ucRes = await usecase.createPresence(payload);
             } else {
-              ucRes = await ucAbnormal.createPresence({ groupInfo, userInfo });
+              ucRes = await ucAbnormal.createPresence(payload);
             }
 
             if (!ucRes.err) {
@@ -94,9 +95,9 @@ const onMessage = async (client, normalMode) => {
 
             let ucRes;
             if (normalMode) {
-              ucRes = await usecase.getParticipants({ groupInfo, userInfo });
+              ucRes = await usecase.getParticipants(payload);
             } else {
-              ucRes = await ucAbnormal.getParticipants({ groupInfo, userInfo });
+              ucRes = await ucAbnormal.getParticipants(payload);
             }
 
             if (!ucRes.err) {
@@ -118,13 +119,9 @@ const onMessage = async (client, normalMode) => {
 
             let ucRes;
             if (normalMode) {
-              ucRes = await usecase.sendReminder({
-                groupInfo, userInfo, client, chat,
-              });
+              ucRes = await usecase.sendReminder(payload);
             } else {
-              ucRes = await ucAbnormal.sendReminder({
-                groupInfo, userInfo, client, chat,
-              });
+              ucRes = await ucAbnormal.sendReminder(payload);
             }
 
             if (!ucRes.err) {
@@ -153,9 +150,9 @@ const onMessage = async (client, normalMode) => {
 
             let ucRes;
             if (normalMode) {
-              ucRes = await usecase.getPresence(groupInfo);
+              ucRes = await usecase.getPresence(payload);
             } else {
-              ucRes = await ucAbnormal.getPresence(groupInfo);
+              ucRes = await ucAbnormal.getPresence(payload);
             }
 
             if (!ucRes.err) {
@@ -180,9 +177,9 @@ const onMessage = async (client, normalMode) => {
 
             let ucRes;
             if (normalMode) {
-              ucRes = await usecase.updateUser({ msg, groupInfo, userInfo });
+              ucRes = await usecase.updateUser(payload);
             } else {
-              ucRes = await ucAbnormal.updateUser({ msg, groupInfo, userInfo });
+              ucRes = await ucAbnormal.updateUser(payload);
             }
 
             if (!ucRes.err) {
@@ -209,9 +206,9 @@ const onMessage = async (client, normalMode) => {
 
             let ucRes;
             if (normalMode) {
-              ucRes = await usecase.getProfile({ groupInfo, userInfo });
+              ucRes = await usecase.getProfile(payload);
             } else {
-              ucRes = await ucAbnormal.getProfile({ groupInfo, userInfo });
+              ucRes = await ucAbnormal.getProfile(payload);
             }
 
             if (!ucRes.err) {

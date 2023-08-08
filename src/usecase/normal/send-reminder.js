@@ -2,9 +2,12 @@ const wrapper = require('../../lib/utils/wrapper');
 const CSVHandler = require('../../lib/csv');
 const sharedUc = require('./shared');
 
-const getPresence = async (groupInfo) => {
+const getPresence = async (params) => {
   try {
-    const filePath = await sharedUc.getFilePathPresence(groupInfo);
+    const groupInfo = params.groupInfo;
+    const classHours = params.classHours;
+    const withCreateFolder = false;
+    const filePath = await sharedUc.getFilePathPresence({ groupInfo, withCreateFolder, classHours });
     if (filePath.err) return filePath;
 
     const csvHandler = new CSVHandler(filePath.data);
@@ -26,15 +29,18 @@ const sendReminder = async (payload) => {
   try {
     const { client } = payload;
     const { chat } = payload;
+    const classHours = payload.classHours;
 
-    const isTimeOver = await sharedUc.checkTimeOver();
+    const isTimeOver = await sharedUc.checkTimeOver(classHours);
     if(isTimeOver.err) return isTimeOver;
-
-    const filePathUserMaster = await sharedUc.getFilePathUserMaster(payload.groupInfo);
+    
+    const groupInfo = payload.groupInfo;
+    const filePathUserMaster = await sharedUc.getFilePathUserMaster(groupInfo);
     if (!filePathUserMaster.err) {
       let usersPresent = [];
 
-      const presenceData = await getPresence(payload.groupInfo);
+      const classHours = payload.classHours;
+      const presenceData = await getPresence({ groupInfo, classHours });
       if (!presenceData.err) usersPresent = presenceData.data;
 
       const mentions = [];

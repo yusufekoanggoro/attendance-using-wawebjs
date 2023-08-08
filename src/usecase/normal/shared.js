@@ -18,79 +18,46 @@ const checkBaseFoldeExists = async (groupName, additionalPath = '') => {
   }
 };
 
-const getFilePathPresence = async (groupInfo, withCreate = true) => {
+const getFilePathPresence = async (params) => {
   try {
     const currentDate = moment();
-    let filePath;
-
-    const startDate1 = moment().set({
-      hour: 18,
-      minute: 30,
-      second: 0,
-    });
-    const endDate1 = moment().set({
-      hour: 20,
-      minute: 10,
-      second: 0,
-    });
-    const startDate2 = moment().set({
-      hour: 7,
-      minute: 30,
-      second: 0,
-    });
-    const endDate2 = moment().set({
-      hour: 10,
-      minute: 0,
-      second: 0,
-    });
-    const startDate3 = moment().set({
-      hour: 10,
-      minute: 0,
-      second: 0,
-    });
-    const endDate3 = moment().set({
-      hour: 11,
-      minute: 40,
-      second: 0,
-    });
-    const startDate4 = moment().set({
-      hour: 12,
-      minute: 30,
-      second: 0,
-    });
-    const endDate4 = moment().set({
-      hour: 14,
-      minute: 10,
-      second: 0,
-    });
+    let filePath = '';
 
     const {
       id: groupId,
       name: groupName,
-    } = groupInfo;
-
-    let validations = [];
+    } = params.groupInfo;
+    const withCreate = params.withCreate;
+    const classHours = params.classHours;
 
     const date = moment().format('DD-MM-YYYY');
+    for (const classHour of classHours) {
+      const startTime = classHour.startTime.split(":");
 
-    validations.push(currentDate.day() === 5);
-    if (currentDate >= startDate1 && currentDate <= endDate1 && validations.includes(true)) {
-      filePath = `./data/${groupName}/${date}/mk1.${groupId}-attendancerecord.csv`;
+      let startDate = moment().set({
+        hour: parseInt(startTime[0]),
+        minute: parseInt(startTime[1]),
+        second: parseInt(startTime[2]),
+      });
+
+      const endTime = classHour.endTime.split(":");
+      let endDate = moment().set({
+        hour: parseInt(endTime[0]),
+        minute: parseInt(endTime[1]),
+        second: parseInt(endTime[2]),
+      });
+
+      let validations = [];
+      classHour.inDays.forEach( v => {
+        validations.push(currentDate.day() === v);
+      })
+
+      if (currentDate >= startDate && currentDate <= endDate && validations.includes(true)) {
+        filePath = `./data/${groupName}/${date}/${classHour.name}-${groupId}-attendancerecord.csv`;
+      }
     }
 
-    validations = [];
-    validations.push(currentDate.day() === 6, currentDate.day() === 0);
-    if (currentDate >= startDate2 && currentDate <= endDate2 && validations.includes(true)) {
-      filePath = `./data/${groupName}/${date}/mk2.${groupId}-attendancerecord.csv`;
-    } else if (currentDate >= startDate3 && currentDate <= endDate3 && validations.includes(true)) {
-      filePath = `./data/${groupName}/${date}/mk3.${groupId}-attendancerecord.csv`;
-    } else if (currentDate >= startDate4 && currentDate <= endDate4 && validations.includes(true)) {
-      filePath = `./data/${groupName}/${date}/mk4.${groupId}-attendancerecord.csv`;
-    } else {
-      filePath = `./data/${groupName}/${date}/mkn-${groupId}-attendancerecord.csv`;
-    }
-
-    if(withCreate){
+    if(withCreate && filePath.length){
       await checkBaseFoldeExists(groupName, date);
   
       const checkFileExists = await fileUtils.checkFileExists(filePath);
@@ -222,11 +189,13 @@ ${groupName}
   }
 };
 
-const getPresence = async (groupInfo) => {
+const getPresence = async (params) => {
   try {
+    const groupInfo = params.groupInfo;
+    const classHours = params.classHours;
 
     const filePathUserMaster = await getFilePathUserMaster(groupInfo);
-    const filePathPresence = await getFilePathPresence(groupInfo);
+    const filePathPresence = await getFilePathPresence({ groupInfo, withCreate: false, classHours });
 
     const headerMessage = await getHeaderMessage(groupInfo.name);
     if (headerMessage.err) return headerMessage;
@@ -270,69 +239,36 @@ const getPresence = async (groupInfo) => {
   }
 };
 
-const checkTimeOver = async () => {
+const checkTimeOver = async (classHours) => {
   try {
     const currentDate = moment();
 
-    const startDate1 = moment().set({
-      hour: 18,
-      minute: 30,
-      second: 0,
-    });
-    const endDate1 = moment().set({
-      hour: 20,
-      minute: 10,
-      second: 0,
-    });
-    const startDate2 = moment().set({
-      hour: 7,
-      minute: 30,
-      second: 0,
-    });
-    const endDate2 = moment().set({
-      hour: 10,
-      minute: 0,
-      second: 0,
-    });
-    const startDate3 = moment().set({
-      hour: 10,
-      minute: 0,
-      second: 0,
-    });
-    const endDate3 = moment().set({
-      hour: 11,
-      minute: 40,
-      second: 0,
-    });
-    const startDate4 = moment().set({
-      hour: 12,
-      minute: 30,
-      second: 0,
-    });
-    const endDate4 = moment().set({
-      hour: 14,
-      minute: 10,
-      second: 0,
-    });
+    for (const classHour of classHours) {
+      const startTime = classHour.startTime.split(":");
 
-    let validations = [];
+      let startDate = moment().set({
+        hour: parseInt(startTime[0]),
+        minute: parseInt(startTime[1]),
+        second: parseInt(startTime[2]),
+      });
 
-    validations.push(currentDate.day() === 5);
-    if (currentDate >= startDate1 && currentDate <= endDate1 && validations.includes(true)) {
-      return wrapper.data('Ok');
+      const endTime = classHour.endTime.split(":");
+      let endDate = moment().set({
+        hour: parseInt(endTime[0]),
+        minute: parseInt(endTime[1]),
+        second: parseInt(endTime[2]),
+      });
+
+      let validations = [];
+      classHour.inDays.forEach( v => {
+        validations.push(currentDate.day() === v);
+      })
+
+      if (currentDate >= startDate && currentDate <= endDate && validations.includes(true)) {
+        return wrapper.data('Ok');
+      }
     }
-
-    validations = [];
-    validations.push(currentDate.day() === 6, currentDate.day() === 0);
-    if (currentDate >= startDate2 && currentDate <= endDate2 && validations.includes(true)) {
-      return wrapper.data('Ok');
-    } else if (currentDate >= startDate3 && currentDate <= endDate3 && validations.includes(true)) {
-      return wrapper.data('Ok');
-    } else if (currentDate >= startDate4 && currentDate <= endDate4 && validations.includes(true)) {
-      return wrapper.data('Ok');
-    } else {
-      return wrapper.error('waktu telah berakhir');
-    }
+    return wrapper.error('waktu telah berakhir');
   } catch (error) {
     return wrapper.error(error);
   }

@@ -2,14 +2,18 @@ const wrapper = require('../../lib/utils/wrapper');
 const CSVHandler = require('../../lib/csv');
 const sharedUc = require('./shared');
 
-const getPresence = async (groupInfo) => {
+const getPresence = async (payload) => {
   try {
+    const classHours = payload.classHours;
 
-    const isTimeOver = await sharedUc.checkTimeOver();
+    const isTimeOver = await sharedUc.checkTimeOver(classHours);
     if(isTimeOver.err) return isTimeOver;
     
+    const groupInfo = payload.groupInfo;
     const filePathUserMaster = await sharedUc.getFilePathUserMaster(groupInfo);
-    const filePathPresence = await sharedUc.getFilePathPresence(groupInfo);
+
+    const withCreate = false;
+    const filePathPresence = await sharedUc.getFilePathPresence({ groupInfo, withCreate, classHours });
 
     const headerMessage = await sharedUc.getHeaderMessage(groupInfo.name);
     if (headerMessage.err) return headerMessage;
