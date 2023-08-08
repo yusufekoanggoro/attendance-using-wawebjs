@@ -2,8 +2,9 @@ const wrapper = require('../../lib/utils/wrapper');
 const CSVHandler = require('../../lib/csv');
 const sharedUc = require('./shared');
 
-const getPresence = async (groupInfo) => {
+const getPresence = async (payload) => {
   try {
+    const groupInfo = payload.groupInfo;
 
     const filePathUserMaster = await sharedUc.getFilePathUserMaster(groupInfo);
     const filePathPresence = await sharedUc.getFilePathPresence(groupInfo);
