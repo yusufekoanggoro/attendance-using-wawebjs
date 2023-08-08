@@ -85,7 +85,6 @@ const setClassHours = async() => {
     const client = await whatsappWebClient(true);
 
     await eventHandler.onMessage(client, normalMode, classHours);
-    await eventHandler.onMessageCreate(client, normalMode, classHours);
   } catch (error) {
     logger.error(error);
   }
