@@ -9,9 +9,9 @@ const createPresence = async (payload) => {
       id: userId,
     } = payload.userInfo;
 
-    const withCreateFolder = true;
+    const withCreate = true;
     const filePathUserMaster = await sharedUc.getFilePathUserMaster(payload.groupInfo);
-    const filePathPresence = await sharedUc.getFilePathPresence(payload.groupInfo, withCreateFolder);
+    const filePathPresence = await sharedUc.getFilePathPresence(payload.groupInfo, withCreate);
 
     if (!filePathUserMaster.err && !filePathPresence.err) {
       const csvUserMaster = new CSVHandler(filePathUserMaster.data);
