@@ -95,92 +95,39 @@ const getFilePathUserMaster = async (groupInfo) => {
   }
 };
 
-const getHeaderMessage = async (groupName) => {
+const getHeaderMessage = async (params) => {
   try {
+    const groupName = params.groupInfo.name;
+    const classHours = params.classHours;
     const currentDate = moment();
-    const startDate1 = moment().set({
-      hour: 18,
-      minute: 30,
-      second: 0,
-    });
-    const endDate1 = moment().set({
-      hour: 20,
-      minute: 10,
-      second: 0,
-    });
 
-    let header = `Presensi ${currentDate.format('DD-MM-YYYY')}
+    let header = '';
+    for (const classHour of classHours) {
+      const startTime = classHour.startTime.split(":");
+
+      let startDate = moment().set({
+        hour: parseInt(startTime[0]),
+        minute: parseInt(startTime[1]),
+        second: parseInt(startTime[2]),
+      });
+
+      const endTime = classHour.endTime.split(":");
+      let endDate = moment().set({
+        hour: parseInt(endTime[0]),
+        minute: parseInt(endTime[1]),
+        second: parseInt(endTime[2]),
+      });
+
+      let validations = [];
+      classHour.inDays.forEach( v => {
+        validations.push(currentDate.day() === v);
+      })
+
+      if (currentDate >= startDate && currentDate <= endDate && validations.includes(true)) {
+        header = `Presensi ${currentDate.format('DD-MM-YYYY')}
 ${groupName}
--`;
-
-    let validations = [];
-
-    validations.push(currentDate.day() === 5);
-    if (
-      currentDate >= startDate1
-      && currentDate <= endDate1
-      && validations.includes(true)
-    ) {
-      header = `Presensi ${currentDate.format('DD-MM-YYYY')}
-${groupName}
-(Pukul ${startDate1.format('HH:mm')} - ${endDate1.format('HH:mm')})`;
-    }
-
-    const startDate2 = moment().set({
-      hour: 7,
-      minute: 30,
-      second: 0,
-    });
-    const endDate2 = moment().set({
-      hour: 10,
-      minute: 0,
-      second: 0,
-    });
-
-    validations = [];
-    validations.push(currentDate.day() === 6, currentDate.day() === 7);
-    if (currentDate >= startDate2 && currentDate <= endDate2 && validations.includes(true)) {
-      header = `Presensi ${currentDate.format('DD-MM-YYYY')}
-${groupName}
-(Pukul ${startDate1.format('HH:mm')} - ${endDate1.format('HH:mm')})`;
-    }
-
-    const startDate3 = moment().set({
-      hour: 10,
-      minute: 0,
-      second: 0,
-    });
-    const endDate3 = moment().set({
-      hour: 11,
-      minute: 40,
-      second: 0,
-    });
-
-    validations = [];
-    validations.push(currentDate.day() === 6, currentDate.day() === 7);
-    if (currentDate >= startDate3 && currentDate <= endDate3 && validations.includes(true)) {
-      header = `Presensi ${currentDate.format('DD-MM-YYYY')}
-${groupName}
-(Pukul ${startDate2.format('HH:mm')} - ${endDate2.format('HH:mm')})`;
-    }
-
-    const startDate4 = moment().set({
-      hour: 12,
-      minute: 30,
-      second: 0,
-    });
-    const endDate4 = moment().set({
-      hour: 14,
-      minute: 10,
-      second: 0,
-    });
-
-    validations = [];
-    validations.push(currentDate.day() === 6, currentDate.day() === 7);
-    if (currentDate >= startDate4 && currentDate <= endDate4 && validations.includes(true)) {
-      header = `Presensi ${currentDate.format('DD-MM-YYYY')}
-${groupName}
-(Pukul ${startDate4.format('HH:mm')} - ${endDate4.format('HH:mm')})`;
+(Pukul ${startDate.format('HH:mm')} - ${endDate.format('HH:mm')})`;
+      }
     }
 
     return wrapper.data(header);
@@ -197,7 +144,7 @@ const getPresence = async (params) => {
     const filePathUserMaster = await getFilePathUserMaster(groupInfo);
     const filePathPresence = await getFilePathPresence({ groupInfo, withCreate: false, classHours });
 
-    const headerMessage = await getHeaderMessage(groupInfo.name);
+    const headerMessage = await getHeaderMessage({ groupInfo, classHours });
     if (headerMessage.err) return headerMessage;
 
     if (!filePathUserMaster.err && !filePathPresence.err) {

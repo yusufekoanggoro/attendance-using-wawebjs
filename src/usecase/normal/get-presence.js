@@ -15,7 +15,7 @@ const getPresence = async (payload) => {
     const withCreate = false;
     const filePathPresence = await sharedUc.getFilePathPresence({ groupInfo, withCreate, classHours });
 
-    const headerMessage = await sharedUc.getHeaderMessage(groupInfo.name);
+    const headerMessage = await sharedUc.getHeaderMessage({ groupInfo, classHours });
     if (headerMessage.err) return headerMessage;
 
     if (!filePathUserMaster.err && !filePathPresence.err) {

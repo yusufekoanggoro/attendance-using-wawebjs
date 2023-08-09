@@ -41,7 +41,13 @@ const setClassHours = async() => {
       startTime: '12:30:00',
       endTime: '14:10:00',
       inDays: [6, 0]
-    }
+    },
+    // {
+    //   name: 'mk5',
+    //   startTime: '14:10:00',
+    //   endTime: '18:00:00',
+    //   inDays: [0, 1, 2, 3, 4, 5, 6]
+    // }
   ]
 
   const userInput = await askQuestion('apakah ingin ubah waktu kuliah? (y/t): ');
