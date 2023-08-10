@@ -2,7 +2,8 @@ const whatsappWebClient = require('./lib/whatsapp-web-client');
 const eventHandler = require('./delivery/event-handler');
 const logger = require('./lib/logger');
 const timeUtils = require('./lib/utils/time');
-const moment = require('moment');
+const fileUtils = require('./lib/utils/file');
+const fs = require('fs').promises;
 
 const askQuestion = async (question) => new Promise((resolve) => {
   const readline = require('readline').createInterface({
@@ -16,9 +17,8 @@ const askQuestion = async (question) => new Promise((resolve) => {
   });
 });
 
-const setClassHours = async() => {
-  let defaultClassHours = [
-    {
+const setClassHours = async () => {
+  let defaultClassHours = [{
       name: 'mk1',
       startTime: '18:30:00',
       endTime: '20:10:00',
@@ -52,24 +52,24 @@ const setClassHours = async() => {
 
   const userInput = await askQuestion('apakah ingin ubah waktu kuliah? (y/t): ');
   if (userInput.toLowerCase() === 'y') {
-    for (const [ index, classHour ] of defaultClassHours.entries()) {
+    for (const [index, classHour] of defaultClassHours.entries()) {
       let select = await askQuestion(`mau ubah ${classHour.name}? (y/t): `);
-      if(select.toLowerCase() === 'y'){
+      if (select.toLowerCase() === 'y') {
         let startTime = await askQuestion('input waktu mulai: HH:mm:ss ');
-        
+
         let validStartTime = timeUtils.validateTimeString(startTime);
         while (!validStartTime) {
           console.log('format salah')
           startTime = await askQuestion('input waktu mulai: HH:mm:ss ');
         }
-  
+
         let endTime = await askQuestion('input waktu berakhir: HH:mm:ss ');
         let validEndTime = timeUtils.validateTimeString(endTime);
         while (!validEndTime) {
           console.log('format salah')
           endTime = await askQuestion('input waktu mulai: HH:mm:ss ');
         }
-  
+
         defaultClassHours[index].startTime = startTime;
         defaultClassHours[index].endTime = endTime;
       }
@@ -78,20 +78,46 @@ const setClassHours = async() => {
   return defaultClassHours;
 }
 
-(async () => {
+
+
+const gracefulShutdown = async () => {
+  try {
+    console.log('Received shutdown signal. Initiating graceful shutdown...');
+
+    const checkFileExists = await fileUtils.checkFileExists('./group-actives.txt');
+    if (checkFileExists) {
+      await fs.unlink('./group-actives.txt');
+    }
+
+    return new Promise(resolve => {
+      setTimeout(() => {
+        console.log(`Exiting with code ${0}`);
+        process.exit(0); // Terminate the process with the provided exit code
+      }, 10 * 1000);
+    });
+  } catch (error) {
+    console.error('Error during cleanup:', error);
+    process.exit(1);
+  }
+}
+
+process.on('SIGINT', gracefulShutdown);
+
+(async() => {
   try {
     const classHours = await setClassHours();
 
     const userInput = await askQuestion('apakah ingin menggunakan mode normal? (y/t): ');
-
+    
     let normalMode = false;
-
+    
     if (userInput.toLowerCase() === 'y') normalMode = true;
-
+    
     const client = await whatsappWebClient(true);
 
     await eventHandler.onMessage(client, normalMode, classHours);
+
   } catch (error) {
     logger.error(error);
   }
-})();
+})()
