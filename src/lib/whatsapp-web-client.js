@@ -19,6 +19,7 @@ const whatsappWebClient = async (qrcodeTerminal = false) => {
     //     ]
     // }
     puppeteer: {
+      args: ['--no-sandbox'],
       // args: ['--proxy-server=proxy-server-that-requires-authentication.example.com'],
       headless: !!qrcodeTerminal, // open browser
     },
