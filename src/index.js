@@ -33,7 +33,7 @@ const setClassHours = async () => {
     {
       name: 'mk3',
       startTime: '10:00:00',
-      endTime: '11:40:00',
+      endTime: '11:00:00',
       inDays: [6, 0]
     },
     {

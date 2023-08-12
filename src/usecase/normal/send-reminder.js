@@ -51,11 +51,11 @@ const sendReminder = async (payload) => {
 
       let textMentionsUser = '';
       for (const participant of chat.participants) {
-        const contact = await client.getContactById(participant.id._serialized);
+        // const contact = await client.getContactById(participant.id._serialized);
         if (!usersPresent.includes(participant.id._serialized)) {
           const foundUser = usersRecord.data.filter((v) => v.wa_number === participant.id._serialized);
           if (foundUser.length) {
-            mentions.push(contact);
+            mentions.push(participant.id.user);
             textMentionsUser += `@${participant.id.user} `;
           }
         }
