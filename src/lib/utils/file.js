@@ -22,7 +22,7 @@ const checkFileExists = async (filePath) => {
 
 const createDirectory = async (directoryName) => {
   try {
-    fs.mkdirSync(directoryName);
+    fs.mkdirSync(directoryName, { recursive: true });
     return true;
   } catch (err) {
     return false;
