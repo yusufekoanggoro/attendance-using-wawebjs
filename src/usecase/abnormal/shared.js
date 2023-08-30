@@ -47,7 +47,7 @@ const getFilePathPresence = async (groupInfo, withCreate = false) => {
   }
 };
 
-const getFilePathUserMaster = async (groupInfo) => {
+const getFilePathUserMasterSpesific = async (groupInfo) => {
   try {
     const {
       id: groupId,
@@ -148,11 +148,31 @@ const getPresence = async (groupInfo) => {
   }
 };
 
+const getFilePathUserMaster = async () => {
+  try {
+
+    const baseFolder = './data';
+    const checkBaseFolderExists = await fileUtils.checkFileExists(baseFolder);
+    if (!checkBaseFolderExists) {
+      await fileUtils.createDirectory(baseFolder);
+    }
+
+    const filePathUserMaster = `./data/users.csv`;
+    const checkFileExists = await fileUtils.checkFileExists(filePathUserMaster);
+    if (!checkFileExists) await fileUtils.createFile(filePathUserMaster, 'wa_number,npm,full_name\n');
+
+    return wrapper.data(filePathUserMaster);
+  } catch (error) {
+    return wrapper.error(error);
+  }
+};
+
 module.exports = {
   checkBaseFoldeExists,
   getFilePathPresence,
   getFilePathUserMaster,
   getHeaderMessage,
   checkFilePathPresenceExist,
-  getPresence
+  getPresence,
+  getFilePathUserMasterSpesific
 };
