@@ -2,7 +2,7 @@ const { createLogger, format, transports,  } = require('winston');
 
 // Custom log format
 const customFormat = format.combine(
-  format.colorize(),
+  // format.colorize(),
   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   format.printf(({ timestamp, level, message }) => {
       return `${timestamp} [${level}]: ${message}`;
