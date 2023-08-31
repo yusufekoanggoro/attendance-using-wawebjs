@@ -1,11 +1,6 @@
 const logger = require('../lib/logger');
 const validator = require('./validator');
-const defaultUsecase = require('../usecase/normal');
-const freeUsecase = require('../usecase/abnormal');
-const usecase = {
-    defaultUsecase,
-    freeUsecase
-};
+const presenceUsecase = require('../usecase/presence');
 const config = require('../../config');
 const minSleepmsHandleBlasting = config.get('/minSleepmsHandleBlasting') ?
     config.get('/minSleepmsHandleBlasting') :
@@ -38,10 +33,9 @@ const onMessage = async (msg, additionalData) => {
             chat,
             groupInfo,
             userInfo,
-            classHours
+            classHours,
+            isFreeMode
         };
-
-        const selectedUsecase = isFreeMode ? 'freeUsecase' : 'defaultUsecase';
 
         let result;
         let allowedReply;
@@ -49,7 +43,7 @@ const onMessage = async (msg, additionalData) => {
         logger.info(`Processing: ${msgBody}`);
         switch (true) {
             case msgBody.startsWith('.daftar '):
-                result = await usecase[selectedUsecase].createUser(payload);
+                result = await presenceUsecase.createUser(payload);
 
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
 
@@ -63,10 +57,12 @@ const onMessage = async (msg, additionalData) => {
                 if (allowedReply.includes(true)) {
                     await msg.reply(result.data !== null ? result.data : result.err);
                 }
+                
+                if(result.err) logger.error(result.err)
                 break;
 
             case msgBody.startsWith('.presensi'):
-                result = await usecase[selectedUsecase].createPresence(payload);
+                result = await presenceUsecase.createPresence(payload);
 
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
 
@@ -83,30 +79,37 @@ const onMessage = async (msg, additionalData) => {
                         await msg.reply(result.data !== null ? result.data : result.err);
                     }
                 }
+                
+                if(result.err) logger.error(result.err)
                 break;
 
-            case msgBody.startsWith('.peserta'):
-                result = await usecase[selectedUsecase].getParticipants(payload);
+            case msgBody.startsWith('.kehadiran'):
+                result = await presenceUsecase.getPresence(payload);
 
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
 
                 allowedReply = [
                     result.data !== null,
+                    result.err === 'waktu telah berakhir',
+                    result.err === 'data not found'
                 ]
 
                 if (allowedReply.includes(true)) {
-                    await msg.reply(result.data);
-                }
-                break;
+                    await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
 
-            case msgBody.startsWith('.help'):
-                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-                await msg.reply(constants.HELP_MESSAGE);
+                    if (allowedReply[2]) {
+                        await msg.reply('data tidak di temukan');
+                    } else {
+                        await msg.reply(result.data !== null ? result.data : result.err);
+                    }
+                }
+
+                if(result.err) logger.error(result.err)
                 break;
 
             case msgBody.startsWith('.reminder'):
-                result = await usecase[selectedUsecase].sendReminder(payload);
-
+                result = await presenceUsecase.sendReminder(payload);
+                console.log(result)
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
 
                 allowedReply = [
@@ -128,32 +131,31 @@ const onMessage = async (msg, additionalData) => {
                         await msg.reply(result.err);
                     }
                 }
+
+                if(result.err) logger.error(result.err)
                 break;
 
-            case msgBody.startsWith('.kehadiran'):
-                result = await usecase[selectedUsecase].getPresence(payload);
+            case msgBody.startsWith('.peserta'):
+                result = await presenceUsecase.getParticipants(payload);
 
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
 
                 allowedReply = [
                     result.data !== null,
-                    result.err === 'waktu telah berakhir',
-                    result.err === 'data not found'
                 ]
 
                 if (allowedReply.includes(true)) {
-                    await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
-
-                    if (allowedReply[2]) {
-                        await msg.reply('data tidak di temukan');
-                    } else {
-                        await msg.reply(result.data !== null ? result.data : result.err);
-                    }
+                    await msg.reply(result.data);
                 }
                 break;
 
+            case msgBody.startsWith('.help'):
+                await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
+                await msg.reply(constants.HELP_MESSAGE);
+                break;
+
             case msgBody.startsWith('.edit '):
-                result = await usecase[selectedUsecase].updateUser(payload);
+                result = await presenceUsecase.updateUser(payload);
 
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
 
@@ -175,7 +177,7 @@ const onMessage = async (msg, additionalData) => {
                 break;
 
             case msgBody.startsWith('.profile'):
-                result = await usecase[selectedUsecase].getProfile(payload);
+                result = await presenceUsecase.getProfile(payload);
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
                 await msg.reply(result.data !== null ? result.data : result.err);
                 break;

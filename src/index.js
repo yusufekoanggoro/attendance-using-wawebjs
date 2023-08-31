@@ -51,10 +51,10 @@ const whatsAppWebClient = require('./lib/whatsappwebclient');
         ]
 
         const userInput = await askQuestion('apakah ingin ubah waktu kuliah? (y/t): ');
-        if (userInput.toLowerCase() === 'y') {
+        if (userInput.toLowerCase() !== 't') {
             for (const [index, classHour] of defaultClassHours.entries()) {
                 let select = await askQuestion(`mau ubah ${classHour.name}? (y/t): `);
-                if (select.toLowerCase() === 'y') {
+                if (select.toLowerCase() !== 't') {
                     let startTime = await askQuestion('input waktu mulai: HH:mm:ss ');
 
                     let validStartTime = timeUtils.validateTimeString(startTime);
