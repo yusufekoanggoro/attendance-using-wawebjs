@@ -1,4 +1,4 @@
-const allAreTrue = async (arr) => {
+const allAreTrue = (arr) => {
   try {
     return arr.every((element) => element === true);
   } catch (error) {
