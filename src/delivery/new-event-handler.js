@@ -109,7 +109,7 @@ const onMessage = async (msg, additionalData) => {
 
             case msgBody.startsWith('.reminder'):
                 result = await presenceUsecase.sendReminder(payload);
-                console.log(result)
+
                 await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
 
                 allowedReply = [
@@ -147,6 +147,8 @@ const onMessage = async (msg, additionalData) => {
                 if (allowedReply.includes(true)) {
                     await msg.reply(result.data);
                 }
+
+                if(result.err) logger.error(result.err)
                 break;
 
             case msgBody.startsWith('.help'):
@@ -174,6 +176,8 @@ const onMessage = async (msg, additionalData) => {
                         await msg.reply(result.data !== null ? result.data : result.err);
                     }
                 }
+
+                if(result.err) logger.error(result.err)
                 break;
 
             case msgBody.startsWith('.profile'):
