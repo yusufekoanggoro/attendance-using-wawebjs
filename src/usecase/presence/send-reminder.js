@@ -30,7 +30,7 @@ const sendReminder = async (payload) => {
   try {
     const { chat } = payload;
     const classHours = payload.classHours;
-    const isFreeMode = payload.classHours;
+    const isFreeMode = payload.isFreeMode;
 
     if(!isFreeMode){
       const isTimeOver = await sharedUc.checkTimeOver(classHours);

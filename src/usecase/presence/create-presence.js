@@ -11,7 +11,7 @@ const createPresence = async (payload) => {
     } = payload.userInfo;
     const classHours = payload.classHours;
     const isFreeMode = payload.isFreeMode;
-
+    
     if(!isFreeMode){
       const isTimeOver = await sharedUc.checkTimeOver(classHours);
       if(isTimeOver.err) return isTimeOver;
