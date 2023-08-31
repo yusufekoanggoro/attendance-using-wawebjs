@@ -58,7 +58,7 @@ const sendReminder = async (payload) => {
       if (!usersPresent.includes(participant.id._serialized)) {
         const foundUser = usersRecord.data.filter((v) => v.wa_number === participant.id._serialized);
         if (foundUser.length) {
-          mentions.push(participant.id.user);
+          mentions.push(participant.id._serialized);
           textMentionsUser += `@${participant.id.user} `;
         }
       }
