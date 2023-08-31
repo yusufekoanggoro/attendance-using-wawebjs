@@ -24,6 +24,15 @@ const updateUser = async (payload) => {
       manipulateMsg.shift();
 
       const fieldName = manipulateMsg.shift().toLowerCase();
+
+      const filePathUserMaster = await sharedUc.getFilePathUserMaster();
+      if(filePathUserMaster.err) return wrapper.error('file not found');
+
+      const csvHandler = new CSVHandler(filePathUserMaster.data);
+
+      const findUserByWaNumber = await csvHandler.findOneByField('wa_number', userId);
+      if (findUserByWaNumber.err) return wrapper.error('gagal edit, pengguna belum terdaftar');
+
       if(fieldName === 'npm'){
         const npm = manipulateMsg.shift();
         conditions.push(
@@ -31,39 +40,26 @@ const updateUser = async (payload) => {
           // npm.length === 12
         );
         if (await arrayUtils.allAreTrue(conditions)) {
-          const filePathUserMaster = await sharedUc.getFilePathUserMaster();
-  
-          if (!filePathUserMaster.err) {
-            const csvHandler = new CSVHandler(filePathUserMaster.data);
-  
-            const findUserByWaNumber = await csvHandler.findOneByField('wa_number', userId);
-            if (!findUserByWaNumber.err) {
-              const oldNpm = findUserByWaNumber.data.npm;
-              const npmInput = npm;
-  
-              if (npmInput !== oldNpm) {
-                const findUserByNpm = await csvHandler.findOneByField('npm', npm);
-                if (!findUserByNpm.err) return wrapper.error('gagal edit, npm sudah terdaftar');
-              }
-  
-              const updateRecord = {
-                wa_number: userId,
-                npm: npmInput,
-              };
-  
-              const resUpdate = await csvHandler.updateRecordByWaNumber(updateRecord);
-              if (resUpdate.err) return resUpdate;
-  
-              const writeData = await csvHandler.writeData();
-              if (writeData.err) return writeData;
-  
-              return wrapper.data('berhasil update');
-            }
-  
-            return wrapper.error('gagal edit, pengguna belum terdaftar');
+          const oldNpm = findUserByWaNumber.data.npm;
+          const npmInput = npm;
+
+          if (npmInput !== oldNpm) {
+            const findUserByNpm = await csvHandler.findOneByField('npm', npm);
+            if (!findUserByNpm.err) return wrapper.error('gagal edit, npm sudah terdaftar');
           }
-  
-          return wrapper.error('file not found');
+
+          const updateRecord = {
+            wa_number: userId,
+            npm: npmInput,
+          };
+
+          const resUpdate = await csvHandler.updateRecordByWaNumber(updateRecord);
+          if (resUpdate.err) return resUpdate;
+
+          const writeData = await csvHandler.writeData();
+          if (writeData.err) return writeData;
+
+          return wrapper.data('berhasil update');
         }
       }
 
@@ -74,34 +70,20 @@ const updateUser = async (payload) => {
           stringUtils.isAlphabetOnlyWithSpace(fullName),
         );
         if (await arrayUtils.allAreTrue(conditions)) {
-          const filePathUserMaster = await sharedUc.getFilePathUserMaster();
-  
-          if (!filePathUserMaster.err) {
-            const csvHandler = new CSVHandler(filePathUserMaster.data);
-  
-            const findUserByWaNumber = await csvHandler.findOneByField('wa_number', userId);
-            if (!findUserByWaNumber.err) {
-              const updateRecord = {
-                wa_number: userId,
-                full_name: fullName,
-              };
-  
-              const resUpdate = await csvHandler.updateRecordByWaNumber(updateRecord);
-              if (resUpdate.err) return resUpdate;
-  
-              const writeData = await csvHandler.writeData();
-              if (writeData.err) return writeData;
-  
-              return wrapper.data('berhasil update');
-            }
-  
-            return wrapper.error('gagal edit, pengguna belum terdaftar');
-          }
-  
-          return wrapper.error('file not found');
+          const updateRecord = {
+            wa_number: userId,
+            full_name: fullName,
+          };
+
+          const resUpdate = await csvHandler.updateRecordByWaNumber(updateRecord);
+          if (resUpdate.err) return resUpdate;
+
+          const writeData = await csvHandler.writeData();
+          if (writeData.err) return writeData;
+
+          return wrapper.data('berhasil update');          
         }
       }
-
     }
 
     return wrapper.error('gagal edit, format pesan salah');

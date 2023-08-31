@@ -9,17 +9,15 @@ const getProfile = async (payload) => {
     } = payload.userInfo;
 
     const filePathUserMaster = await sharedUc.getFilePathUserMaster();
-    if (!filePathUserMaster.err) {
-      const csvUserMaster = new CSVHandler(filePathUserMaster.data);
+    if(filePathUserMaster.err) return wrapper.error('file not found');
 
-      const findUserByWaNumber = await csvUserMaster.findOneByField('wa_number', wa_number);
-      if(findUserByWaNumber.err) return wrapper.error('profile tidak ditemukan');
+    const csvUserMaster = new CSVHandler(filePathUserMaster.data);
 
-      let finalString = `${findUserByWaNumber.data.npm} ${findUserByWaNumber.data.full_name}`
-      return wrapper.data(finalString);
-    }
+    const findUserByWaNumber = await csvUserMaster.findOneByField('wa_number', wa_number);
+    if(findUserByWaNumber.err) return wrapper.error('profile tidak ditemukan');
 
-    return wrapper.error('file not found');
+    let finalString = `${findUserByWaNumber.data.npm} ${findUserByWaNumber.data.full_name}`
+    return wrapper.data(finalString);
   } catch (error) {
     return wrapper.error(error);
   }
