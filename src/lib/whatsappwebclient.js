@@ -26,8 +26,8 @@ class WhatsAppWebClient {
       },
     });
 
-    this.client.on('qr', displayQRCode);
-    this.client.on('ready', onClientReady);
+    this.client.on('qr', this.displayQRCode);
+    this.client.on('ready', this.onClientReady);
     this.client.initialize();
   }
 
