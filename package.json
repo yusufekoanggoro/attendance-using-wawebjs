@@ -10,7 +10,7 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "author": "Yusuf Eko Anggoro",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "confidence": "^5.0.1",
     "csv-parser": "^3.0.0",
