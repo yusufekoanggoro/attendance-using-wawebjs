@@ -5,7 +5,7 @@ const sharedUc = require('./shared');
 const getParticipants = async (payload) => {
   try {
     const filePathUserMaster = await sharedUc.getFilePathUserMaster();
-    if(filePathUserMaster.err) return wrapper.error('file not found');
+    if (filePathUserMaster.err) return wrapper.error('file not found');
 
     const csvHandler = new CSVHandler(filePathUserMaster.data);
     const userData = await csvHandler.readAllRecords();
@@ -13,11 +13,11 @@ const getParticipants = async (payload) => {
     let allRegisteredUser = [];
     if (!userData.err) allRegisteredUser = userData.data;
 
-    let filteredUsers = [];
+    const filteredUsers = [];
     for (const participant of payload.chat.participants) {
       const foundUser = allRegisteredUser.filter((v) => v.wa_number === participant.id._serialized);
       if (foundUser.length) {
-        filteredUsers.push(foundUser[0])
+        filteredUsers.push(foundUser[0]);
       }
     }
 
@@ -28,7 +28,7 @@ const getParticipants = async (payload) => {
       sequenceNumber += 1;
     });
 
-    let finalString = `Daftar Peserta\n\n`;
+    let finalString = 'Daftar Peserta\n\n';
     registeredUserInGrup.forEach((v) => {
       finalString += v;
     });

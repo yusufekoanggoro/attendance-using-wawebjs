@@ -9,20 +9,22 @@ const createPresence = async (payload) => {
     const {
       id: userId,
     } = payload.userInfo;
-    const classHours = payload.classHours;
-    const isFreeMode = payload.isFreeMode;
-    
-    if(!isFreeMode){
+    const { classHours } = payload;
+    const { isFreeMode } = payload;
+
+    if (!isFreeMode) {
       const isTimeOver = await sharedUc.checkTimeOver(classHours);
-      if(isTimeOver.err) return isTimeOver;
+      if (isTimeOver.err) return isTimeOver;
     }
 
-    const groupInfo = payload.groupInfo;
+    const { groupInfo } = payload;
     const filePathUserMaster = await sharedUc.getFilePathUserMaster();
     const withCreate = true;
-    const filePathPresence = await sharedUc.getFilePathPresence({ groupInfo, withCreate, classHours, isFreeMode });
+    const filePathPresence = await sharedUc.getFilePathPresence({
+      groupInfo, withCreate, classHours, isFreeMode,
+    });
 
-    if(filePathUserMaster.err || filePathPresence.err) return wrapper.error('file not found');
+    if (filePathUserMaster.err || filePathPresence.err) return wrapper.error('file not found');
 
     const csvUser = new CSVHandler(filePathUserMaster.data);
 
@@ -31,7 +33,7 @@ const createPresence = async (payload) => {
 
     const { wa_number } = findUser.data;
     const fullName = findUser.data.full_name;
-    const npm = findUser.data.npm;
+    const { npm } = findUser.data;
 
     const csvPresence = new CSVHandler(filePathPresence.data);
 

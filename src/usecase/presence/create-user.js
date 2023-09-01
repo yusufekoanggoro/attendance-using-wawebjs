@@ -3,7 +3,7 @@ const CSVHandler = require('../../lib/csv');
 const stringUtils = require('../../lib/utils/string');
 const arrayUtils = require('../../lib/utils/array');
 const sharedUc = require('./shared');
-const logger = require('../../lib/logger')
+const logger = require('../../lib/logger');
 
 const createUser = async (payload) => {
   try {
@@ -16,10 +16,10 @@ const createUser = async (payload) => {
       id: userId,
     } = userInfo;
 
-    let conditions = [];
+    const conditions = [];
     const msgBody = msg.body.trim();
 
-    if(msgBody.split(' ', 3).length !== 3) return wrapper.error('gagal daftar, format pesan salah');
+    if (msgBody.split(' ', 3).length !== 3) return wrapper.error('gagal daftar, format pesan salah');
 
     const manipulateMsg = msgBody.split(' ');
     manipulateMsg.shift();
@@ -37,16 +37,16 @@ const createUser = async (payload) => {
     if (!arrayUtils.allAreTrue(conditions)) return wrapper.error('gagal daftar, format pesan salah');
 
     const filePathUserMaster = await sharedUc.getFilePathUserMaster();
-    if(filePathUserMaster.err) return wrapper.error('file not found');
+    if (filePathUserMaster.err) return wrapper.error('file not found');
 
     const csvUser = new CSVHandler(filePathUserMaster.data);
-    
+
     const findUserByWaNumber = await csvUser.findOneByField('wa_number', userId);
-    if(!findUserByWaNumber.err) return wrapper.error('gagal daftar, pengguna sudah terdaftar');
+    if (!findUserByWaNumber.err) return wrapper.error('gagal daftar, pengguna sudah terdaftar');
 
     const findUserByNpm = await csvUser.findOneByField('npm', npm);
-    if(!findUserByNpm.err) return wrapper.error('gagal daftar, npm sudah terdaftar');
-    
+    if (!findUserByNpm.err) return wrapper.error('gagal daftar, npm sudah terdaftar');
+
     const newRecord = {
       wa_number: userId,
       npm,

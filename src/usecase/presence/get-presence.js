@@ -4,19 +4,21 @@ const sharedUc = require('./shared');
 
 const getPresence = async (payload) => {
   try {
-    const classHours = payload.classHours;
-    const isFreeMode = payload.isFreeMode;
+    const { classHours } = payload;
+    const { isFreeMode } = payload;
 
-    if(!isFreeMode){
+    if (!isFreeMode) {
       const isTimeOver = await sharedUc.checkTimeOver(classHours);
-      if(isTimeOver.err) return isTimeOver;
+      if (isTimeOver.err) return isTimeOver;
     }
 
-    const groupInfo = payload.groupInfo;
+    const { groupInfo } = payload;
     const filePathUserMaster = await sharedUc.getFilePathUserMaster();
 
     const withCreate = false;
-    const filePathPresence = await sharedUc.getFilePathPresence({ groupInfo, withCreate, classHours, isFreeMode });
+    const filePathPresence = await sharedUc.getFilePathPresence({
+      groupInfo, withCreate, classHours, isFreeMode,
+    });
 
     const headerMessage = await sharedUc.getHeaderMessage({ groupInfo, classHours, isFreeMode });
     if (headerMessage.err) return headerMessage;
@@ -52,7 +54,7 @@ const getPresence = async (payload) => {
       return wrapper.data(finalString);
     }
 
-    let finalString = `${headerMessage.data}\n\n\nTotal: 0 Mahasiswa/i`;
+    const finalString = `${headerMessage.data}\n\n\nTotal: 0 Mahasiswa/i`;
 
     return wrapper.data(finalString);
   } catch (error) {

@@ -1,7 +1,6 @@
 const moment = require('moment');
 const fileUtils = require('../../lib/utils/file');
 const wrapper = require('../../lib/utils/wrapper');
-const CSVHandler = require('../../lib/csv');
 
 const getFilePathPresence = async (params) => {
   try {
@@ -13,58 +12,58 @@ const getFilePathPresence = async (params) => {
       name: groupName,
     } = params.groupInfo;
 
-    const withCreate = params.withCreate;
-    const classHours = params.classHours;
+    const { withCreate } = params;
+    const { classHours } = params;
 
     const date = moment().format('DD-MM-YYYY');
-    
-    if(params.isFreeMode){
+
+    if (params.isFreeMode) {
       filePath = `./data/${groupName}/${date}/mkn-${groupId}-attendancerecord.csv`;
-    }else{
+    } else {
       for (const classHour of classHours) {
-        const startTime = classHour.startTime.split(":");
-  
-        let startDate = moment().set({
+        const startTime = classHour.startTime.split(':');
+
+        const startDate = moment().set({
           hour: parseInt(startTime[0]),
           minute: parseInt(startTime[1]),
           second: parseInt(startTime[2]),
         });
-  
-        const endTime = classHour.endTime.split(":");
-        let endDate = moment().set({
+
+        const endTime = classHour.endTime.split(':');
+        const endDate = moment().set({
           hour: parseInt(endTime[0]),
           minute: parseInt(endTime[1]),
           second: parseInt(endTime[2]),
         });
-  
-        let validations = [];
-        classHour.inDays.forEach( v => {
+
+        const validations = [];
+        classHour.inDays.forEach((v) => {
           validations.push(currentDate.day() === v);
-        })
-  
+        });
+
         if (currentDate >= startDate && currentDate <= endDate && validations.includes(true)) {
           filePath = `./data/${groupName}/${date}/${classHour.name}-${groupId}-attendancerecord.csv`;
         }
       }
     }
-    
-    if(withCreate && filePath.length){
+
+    if (withCreate && filePath.length) {
       const baseFolder = `./data/${groupName}/${date}`;
       const isFileExist = await fileUtils.checkFileExists(baseFolder);
       if (!isFileExist) {
         await fileUtils.createDirectory(baseFolder);
       }
-  
+
       const checkFileExists = await fileUtils.checkFileExists(filePath);
       if (!checkFileExists) {
         await fileUtils.createFile(filePath, 'wa_number,npm,full_name\n');
       }
     }
-    
-    if(!await fileUtils.checkFileExists(filePath)){
+
+    if (!await fileUtils.checkFileExists(filePath)) {
       return wrapper.error('file not found');
     }
-    
+
     return wrapper.data(filePath);
   } catch (error) {
     return wrapper.error(error);
@@ -74,37 +73,37 @@ const getFilePathPresence = async (params) => {
 const getHeaderMessage = async (params) => {
   try {
     const groupName = params.groupInfo.name;
-    const classHours = params.classHours;
+    const { classHours } = params;
     const currentDate = moment();
-    const isFreeMode = params.isFreeMode;
+    const { isFreeMode } = params;
 
     let header = '';
-    if(isFreeMode){
+    if (isFreeMode) {
       header = `Presensi ${currentDate.format('DD-MM-YYYY')}\n${groupName}`;
-    }else{
+    } else {
       for (const classHour of classHours) {
-        const startTime = classHour.startTime.split(":");
-  
-        let startDate = moment().set({
+        const startTime = classHour.startTime.split(':');
+
+        const startDate = moment().set({
           hour: parseInt(startTime[0]),
           minute: parseInt(startTime[1]),
           second: parseInt(startTime[2]),
         });
-  
-        const endTime = classHour.endTime.split(":");
-        let endDate = moment().set({
+
+        const endTime = classHour.endTime.split(':');
+        const endDate = moment().set({
           hour: parseInt(endTime[0]),
           minute: parseInt(endTime[1]),
           second: parseInt(endTime[2]),
         });
-  
-        let validations = [];
-        classHour.inDays.forEach( v => {
+
+        const validations = [];
+        classHour.inDays.forEach((v) => {
           validations.push(currentDate.day() === v);
-        })
-  
+        });
+
         if (currentDate >= startDate && currentDate <= endDate && validations.includes(true)) {
-          header = `Presensi ${currentDate.format('DD-MM-YYYY')}\n` 
+          header = `Presensi ${currentDate.format('DD-MM-YYYY')}\n`
             + `${groupName}\n`
             + `(Pukul ${startDate.format('HH:mm')} - ${endDate.format('HH:mm')})`;
         }
@@ -122,25 +121,25 @@ const checkTimeOver = async (classHours) => {
     const currentDate = moment();
 
     for (const classHour of classHours) {
-      const startTime = classHour.startTime.split(":");
+      const startTime = classHour.startTime.split(':');
 
-      let startDate = moment().set({
+      const startDate = moment().set({
         hour: parseInt(startTime[0]),
         minute: parseInt(startTime[1]),
         second: parseInt(startTime[2]),
       });
 
-      const endTime = classHour.endTime.split(":");
-      let endDate = moment().set({
+      const endTime = classHour.endTime.split(':');
+      const endDate = moment().set({
         hour: parseInt(endTime[0]),
         minute: parseInt(endTime[1]),
         second: parseInt(endTime[2]),
       });
 
-      let validations = [];
-      classHour.inDays.forEach( v => {
+      const validations = [];
+      classHour.inDays.forEach((v) => {
         validations.push(currentDate.day() === v);
-      })
+      });
 
       if (currentDate >= startDate && currentDate <= endDate && validations.includes(true)) {
         return wrapper.data('Ok');

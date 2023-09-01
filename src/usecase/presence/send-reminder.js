@@ -4,11 +4,13 @@ const sharedUc = require('./shared');
 
 const getPresence = async (params) => {
   try {
-    const groupInfo = params.groupInfo;
-    const classHours = params.classHours;
+    const { groupInfo } = params;
+    const { classHours } = params;
     const isFreeMode = params.classHours;
     const withCreateFolder = false;
-    const filePath = await sharedUc.getFilePathPresence({ groupInfo, withCreateFolder, classHours, isFreeMode });
+    const filePath = await sharedUc.getFilePathPresence({
+      groupInfo, withCreateFolder, classHours, isFreeMode,
+    });
     if (filePath.err) return filePath;
 
     const csvHandler = new CSVHandler(filePath.data);
@@ -29,17 +31,17 @@ const getPresence = async (params) => {
 const sendReminder = async (payload) => {
   try {
     const { chat } = payload;
-    const classHours = payload.classHours;
-    const isFreeMode = payload.isFreeMode;
+    const { classHours } = payload;
+    const { isFreeMode } = payload;
 
-    if(!isFreeMode){
+    if (!isFreeMode) {
       const isTimeOver = await sharedUc.checkTimeOver(classHours);
-      if(isTimeOver.err) return isTimeOver;
+      if (isTimeOver.err) return isTimeOver;
     }
-    
-    const groupInfo = payload.groupInfo;
+
+    const { groupInfo } = payload;
     const filePathUserMaster = await sharedUc.getFilePathUserMaster();
-    if(filePathUserMaster.err) return wrapper.error('file not found');
+    if (filePathUserMaster.err) return wrapper.error('file not found');
 
     let usersPresent = [];
 
@@ -69,7 +71,7 @@ const sendReminder = async (payload) => {
       textMentionsUser,
       usersPresent,
     };
-    return wrapper.data(data);    
+    return wrapper.data(data);
   } catch (error) {
     return wrapper.error(error);
   }

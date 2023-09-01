@@ -8,7 +8,6 @@ const updateUser = async (payload) => {
   try {
     const {
       msg,
-      groupInfo,
       userInfo,
     } = payload;
 
@@ -26,14 +25,14 @@ const updateUser = async (payload) => {
       const fieldName = manipulateMsg.shift().toLowerCase();
 
       const filePathUserMaster = await sharedUc.getFilePathUserMaster();
-      if(filePathUserMaster.err) return wrapper.error('file not found');
+      if (filePathUserMaster.err) return wrapper.error('file not found');
 
       const csvHandler = new CSVHandler(filePathUserMaster.data);
 
       const findUserByWaNumber = await csvHandler.findOneByField('wa_number', userId);
       if (findUserByWaNumber.err) return wrapper.error('gagal edit, pengguna belum terdaftar');
 
-      if(fieldName === 'npm'){
+      if (fieldName === 'npm') {
         const npm = manipulateMsg.shift();
         conditions.push(
           stringUtils.containsOnlyNumbers(npm),
@@ -63,7 +62,7 @@ const updateUser = async (payload) => {
         }
       }
 
-      if(fieldName === 'nama'){
+      if (fieldName === 'nama') {
         const arrMsgFName = manipulateMsg.filter((item) => item.trim() !== '');
         const fullName = stringUtils.capitalizeEachWord(arrMsgFName.join(' '));
         conditions.push(
@@ -81,7 +80,7 @@ const updateUser = async (payload) => {
           const writeData = await csvHandler.writeData();
           if (writeData.err) return writeData;
 
-          return wrapper.data('berhasil update');          
+          return wrapper.data('berhasil update');
         }
       }
     }
