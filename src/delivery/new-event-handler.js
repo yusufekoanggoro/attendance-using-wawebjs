@@ -188,7 +188,7 @@ const onMessage = async (msg, additionalData) => {
         break;
 
       default:
-        await msg.reply('format pesan salah');
+        // await msg.reply('format pesan salah');
         logger.info('switch case default');
         break;
     }

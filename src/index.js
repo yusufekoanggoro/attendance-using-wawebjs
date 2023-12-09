@@ -32,13 +32,13 @@ const whatsAppWebClient = require('./lib/whatsappwebclient');
     {
       name: 'mk3',
       startTime: '10:00:00',
-      endTime: '11:00:00',
+      endTime: '11:40:00',
       inDays: [6, 0],
     },
     {
       name: 'mk4',
       startTime: '12:30:00',
-      endTime: '14:10:00',
+      endTime: '15:00:00',
       inDays: [6, 0],
     },
       // {

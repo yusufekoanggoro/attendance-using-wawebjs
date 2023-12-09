@@ -46,7 +46,7 @@ const getFilePathPresence = async (params) => {
         }
       }
     }
-
+    console.log(filePath)
     if (withCreate && filePath.length) {
       const baseFolder = `./data/${groupName}/${date}`;
       const isFileExist = await fileUtils.checkFileExists(baseFolder);

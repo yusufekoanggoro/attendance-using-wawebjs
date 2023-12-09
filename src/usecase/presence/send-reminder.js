@@ -6,7 +6,7 @@ const getPresence = async (params) => {
   try {
     const { groupInfo } = params;
     const { classHours } = params;
-    const isFreeMode = params.classHours;
+    const isFreeMode = params.isFreeMode;
     const withCreateFolder = false;
     const filePath = await sharedUc.getFilePathPresence({
       groupInfo, withCreateFolder, classHours, isFreeMode,
@@ -55,7 +55,9 @@ const sendReminder = async (payload) => {
     if (usersRecord.err) return usersRecord;
 
     let textMentionsUser = '';
+    console.log(usersPresent)
     for (const participant of chat.participants) {
+      console.log(participant.id._serialized);
       // const contact = await client.getContactById(participant.id._serialized);
       if (!usersPresent.includes(participant.id._serialized)) {
         const foundUser = usersRecord.data.filter((v) => v.wa_number === participant.id._serialized);
