@@ -41,7 +41,7 @@ class WhatsAppWebClient {
 
   async handleIncomingMessage(eventHandler, additionalData) {
     this.client.on('message', async (msg) => {
-      await eventHandler(msg, additionalData);
+      await eventHandler(msg, additionalData, this.client);
     });
   }
 

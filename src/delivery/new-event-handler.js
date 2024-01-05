@@ -12,7 +12,7 @@ const maxSleepmsHandleBlasting = config.get('/maxSleepmsHandleBlasting')
 const timeUtils = require('../lib/utils/time');
 const constants = require('../lib/utils/constants');
 
-const onMessage = async (msg, additionalData) => {
+const onMessage = async (msg, additionalData, client) => {
   try {
     const {
       classHours,
@@ -188,6 +188,26 @@ const onMessage = async (msg, additionalData) => {
         break;
 
       default:
+        if(msgBody.includes('ETIKA PROFESI PERTEMUAN 8')){
+          const nameToReplace = 'Yusuf Eko Anggoro';
+          const newName = 'Yusuf Eko Anggoro ✅'; // Ganti dengan nama baru yang diinginkan
+          let regex;
+
+          regex = new RegExp(newName, 'g');
+          const isAlready = regex.test(msgBody);
+          if(!isAlready){
+            regex = new RegExp(nameToReplace, 'g');
+            const isNameFound = regex.test(msgBody);
+            if (isNameFound) {
+              const newText = msgBody.replace(regex, newName);
+              await client.sendMessage(msg.from, newText);
+            } else {
+              console.log(`Nama "${nameToReplace}" tidak ditemukan dalam teks.`);
+            }
+          }else{
+            console.log('already presence');
+          }
+        }
         // await msg.reply('format pesan salah');
         logger.info('switch case default');
         break;
