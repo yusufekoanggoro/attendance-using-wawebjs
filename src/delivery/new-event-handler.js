@@ -2,6 +2,8 @@ const logger = require('../lib/logger');
 const validator = require('./validator');
 const presenceUsecase = require('../usecase/presence');
 const config = require('../../config');
+const { MessageMedia } = require('whatsapp-web.js');
+const Tesseract = require('node-tesseract-ocr');
 
 const minSleepmsHandleBlasting = config.get('/minSleepmsHandleBlasting')
   ? config.get('/minSleepmsHandleBlasting')
@@ -69,12 +71,12 @@ const onMessage = async (msg, additionalData, client) => {
 
         allowedReply = [
           result.data !== null,
-          result.err === 'waktu telah berakhir',
+          // result.err === 'waktu telah berakhir',
           result.err === 'gagal presensi, pengguna belum terdaftar',
         ];
 
         if (allowedReply.includes(true)) {
-          if (allowedReply[2]) {
+          if (allowedReply[1]) {
             await msg.reply(constants.REPLY_USER_NOT_REGISTERED);
           } else {
             await msg.reply(result.data !== null ? result.data : result.err);
@@ -186,9 +188,44 @@ const onMessage = async (msg, additionalData, client) => {
         await timeUtils.sleepRandom(minSleepmsHandleBlasting, maxSleepmsHandleBlasting);
         await msg.reply(result.data !== null ? result.data : result.err);
         break;
-
+      case msg.hasQuotedMsg:
+        if(msgBody.startsWith('.sticker')){
+          let message = await msg.getQuotedMessage()
+          if(message.hasMedia){
+            const media = await message.downloadMedia();
+            await client.sendMessage(msg.from, media, { sendMediaAsSticker: true });
+          }
+        }
+        break;
+      case msgBody.startsWith('.sticker'):
+        if (msg.hasMedia) {
+          const media = await msg.downloadMedia();
+          await client.sendMessage(msg.from, media, { sendMediaAsSticker: true });
+        }
+        break;
+      case msgBody.startsWith('.imagetext'):
+        const config = {
+          lang: "eng"
+        }
+        if (!msg.hasMedia) {
+          const fs = require('fs');
+          const imageBuffer = fs.readFileSync('./images/dum.png');
+          // const media = await msg.downloadMedia();
+          const img = "https://tesseract.projectnaptha.com/img/eng_bw.png"
+          Tesseract.recognize(
+            imageBuffer,
+            // Buffer.from(media.data, 'base64').toString('binary'),
+            config
+          ).then(async (text) => {
+            // Display the extracted text
+            await client.sendMessage(msg.from, text);
+          }).catch(error => {
+            logger.error(error)
+          });
+        }
+        break;
       default:
-        if(msgBody.includes('ETIKA PROFESI PERTEMUAN 8')){
+        if(msgBody.includes('ETIKA PROFESI PERTEMUAN')){
           const nameToReplace = 'Yusuf Eko Anggoro';
           const newName = 'Yusuf Eko Anggoro ✅'; // Ganti dengan nama baru yang diinginkan
           let regex;
