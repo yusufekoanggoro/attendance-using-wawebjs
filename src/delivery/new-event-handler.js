@@ -245,6 +245,14 @@ const onMessage = async (msg, additionalData, client) => {
             console.log('already presence');
           }
         }
+
+        if(msgBody.startsWith('.quote') || msgBody.includes('.quote')){
+          let mergedArray = constants.QUOTES_ARRAY_2;
+          let randomIndex = Math.floor(Math.random() * mergedArray.length);
+          let randomElement = mergedArray[randomIndex];
+          await client.sendMessage(msg.from, `*${randomElement}*`);
+        }
+
         // await msg.reply('format pesan salah');
         logger.info('switch case default');
         break;
